@@ -52,7 +52,7 @@
                 <h2 class="text-xl font-bold text-gray-900">Pendapatan Mingguan</h2>
                 <p class="text-sm text-gray-500">Rentang: {{ $weekly['range'] }}</p>
             </div>
-            <div class="flex flex-wrap gap-2">
+            <!-- <div class="flex flex-wrap gap-2">
                 <a href="{{ route('owner.laporan-pendapatan.export', ['type' => 'weekly', 'format' => 'csv', 'weeks' => $filters['weeks']]) }}"
                     class="px-3 py-2 text-sm font-medium bg-gray-100 rounded-lg hover:bg-gray-200">
                     Export CSV
@@ -61,7 +61,7 @@
                     class="px-3 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700">
                     Export PDF
                 </a>
-            </div>
+            </div> -->
         </div>
         <div class="grid lg:grid-cols-2 gap-6">
             <div class="bg-white rounded-xl shadow-md p-6">
@@ -94,7 +94,7 @@
                 <h2 class="text-xl font-bold text-gray-900">Pendapatan Bulanan</h2>
                 <p class="text-sm text-gray-500">Tahun: {{ $monthly['year'] }}</p>
             </div>
-            <div class="flex flex-wrap gap-2">
+            <!-- <div class="flex flex-wrap gap-2">
                 <a href="{{ route('owner.laporan-pendapatan.export', ['type' => 'monthly', 'format' => 'csv', 'year' => $filters['year']]) }}"
                     class="px-3 py-2 text-sm font-medium bg-gray-100 rounded-lg hover:bg-gray-200">
                     Export CSV
@@ -103,7 +103,7 @@
                     class="px-3 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700">
                     Export PDF
                 </a>
-            </div>
+            </div> -->
         </div>
         <div class="grid lg:grid-cols-2 gap-6">
             <div class="bg-white rounded-xl shadow-md p-6">
@@ -136,7 +136,7 @@
                 <h2 class="text-xl font-bold text-gray-900">Pendapatan Tahunan</h2>
                 <p class="text-sm text-gray-500">Rentang: {{ $yearly['range'] }}</p>
             </div>
-            <div class="flex flex-wrap gap-2">
+            <!-- <div class="flex flex-wrap gap-2">
                 <a href="{{ route('owner.laporan-pendapatan.export', ['type' => 'yearly', 'format' => 'csv', 'years' => $filters['years']]) }}"
                     class="px-3 py-2 text-sm font-medium bg-gray-100 rounded-lg hover:bg-gray-200">
                     Export CSV
@@ -145,7 +145,7 @@
                     class="px-3 py-2 text-sm font-medium bg-primary-600 text-white rounded-lg hover:bg-primary-700">
                     Export PDF
                 </a>
-            </div>
+            </div> -->
         </div>
         <div class="grid lg:grid-cols-2 gap-6">
             <div class="bg-white rounded-xl shadow-md p-6">

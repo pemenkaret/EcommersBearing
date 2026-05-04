@@ -26,7 +26,6 @@ class DashboardController extends Controller
      * Menampilkan halaman dashboard admin.
      *
      * Mengambil data statistik seperti:
-     * - Total pendapatan dari pesanan selesai
      * - Total pesanan
      * - Total produk
      * - Total pelanggan
@@ -38,9 +37,6 @@ class DashboardController extends Controller
      */
     public function index(): View
     {
-        // Total Pendapatan (sum dari order yang status delivered)
-        $totalPendapatan = Order::where('status', 'delivered')->sum('total');
-
         // Total Pesanan
         $totalPesanan = Order::count();
 
@@ -75,7 +71,6 @@ class DashboardController extends Controller
             ->get();
 
         return view('admin.dashboard.index', compact(
-            'totalPendapatan',
             'totalPesanan',
             'totalProduk',
             'totalPelanggan',

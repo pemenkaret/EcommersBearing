@@ -20,20 +20,6 @@
 
     <!-- Statistik Cards -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-        <!-- Total Pendapatan -->
-        <div class="bg-white rounded-xl shadow-md p-6">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-gray-500 text-sm font-medium mb-1">Total Pendapatan</p>
-                    <p class="text-2xl font-bold text-gray-900">Rp {{ number_format($totalPendapatan, 0, ',', '.') }}</p>
-                    <p class="text-xs text-green-600 mt-1"><i class="fas fa-check mr-1"></i>Dari order selesai</p>
-                </div>
-                <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                    <i class="fas fa-money-bill-wave text-green-600 text-xl"></i>
-                </div>
-            </div>
-        </div>
-
         <!-- Total Pesanan -->
         <div class="bg-white rounded-xl shadow-md p-6">
             <div class="flex items-center justify-between">

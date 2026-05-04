@@ -133,6 +133,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Mengecek apakah user memiliki role owner.
+     *
+     * @return bool
+     */
+    public function isOwner(): bool
+    {
+        return $this->role && $this->role->name === 'owner';
+    }
+
+    /**
      * Check apakah user adalah pelanggan
      */
     public function isPelanggan()

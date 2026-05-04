@@ -37,6 +37,10 @@ class AuthController extends Controller
             if (auth()->user()->isAdmin()) {
                 return redirect()->intended('/admin/dashboard');
             }
+
+            if (auth()->user()->isOwner()) {
+                return redirect()->intended(route('owner.laporan-pendapatan.index'));
+            }
             
             return redirect()->intended('/');
         }
