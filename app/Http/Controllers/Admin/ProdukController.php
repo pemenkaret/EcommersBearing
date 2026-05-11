@@ -78,7 +78,7 @@ class ProdukController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
                 $imageName = time() . '_' . $index . '.' . $image->getClientOriginalExtension();
-                $image->storeAs('public/produk/' . $produk->id, $imageName);
+                $image->storeAs('produk/' . $produk->id, $imageName, 'public');
                 
                 ProdukImage::create([
                     'produk_id' => $produk->id,
@@ -123,7 +123,7 @@ class ProdukController extends Controller
             
             foreach ($request->file('images') as $index => $image) {
                 $imageName = time() . '_' . ($existingImagesCount + $index) . '.' . $image->getClientOriginalExtension();
-                $image->storeAs('public/produk/' . $produk->id, $imageName);
+                $image->storeAs('produk/' . $produk->id, $imageName, 'public');
                 
                 ProdukImage::create([
                     'produk_id' => $produk->id,

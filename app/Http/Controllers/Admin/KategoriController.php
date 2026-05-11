@@ -64,7 +64,7 @@ class KategoriController extends Controller
         // Upload icon jika ada
         if ($request->hasFile('icon')) {
             $iconName = time() . '.' . $request->file('icon')->getClientOriginalExtension();
-            $request->file('icon')->storeAs('public/kategori', $iconName);
+            $request->file('icon')->storeAs('kategori', $iconName, 'public');
             $data['icon'] = 'kategori/' . $iconName;
         }
 
@@ -102,11 +102,11 @@ class KategoriController extends Controller
         // Upload icon baru jika ada
         if ($request->hasFile('icon')) {
             $iconName = time() . '.' . $request->file('icon')->getClientOriginalExtension();
-            $request->file('icon')->storeAs('public/kategori', $iconName);
+            $request->file('icon')->storeAs('kategori', $iconName, 'public');
             $data['icon'] = 'kategori/' . $iconName;
         }
 
-        $kategori->update($request->all());
+        $kategori->update($data);
 
         return redirect()->route('admin.kategori.index')->with('success', 'Kategori berhasil diupdate.');
     }

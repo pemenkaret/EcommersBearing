@@ -65,7 +65,7 @@ class MerkController extends Controller
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
             $logoName = time() . '.' . $logo->getClientOriginalExtension();
-            $logo->storeAs('public/merk', $logoName);
+            $logo->storeAs('merk', $logoName, 'public');
             $data['logo'] = 'merk/' . $logoName;
         }
 
@@ -104,7 +104,7 @@ class MerkController extends Controller
         if ($request->hasFile('logo')) {
             $logo = $request->file('logo');
             $logoName = time() . '.' . $logo->getClientOriginalExtension();
-            $logo->storeAs('public/merk', $logoName);
+            $logo->storeAs('merk', $logoName, 'public');
             $data['logo'] = 'merk/' . $logoName;
         }
 
