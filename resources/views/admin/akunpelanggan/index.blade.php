@@ -130,9 +130,6 @@
                         <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
                             Terdaftar
                         </th>
-                        <th class="px-6 py-4 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">
-                            Aksi
-                        </th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
@@ -169,27 +166,10 @@
                             <td class="px-6 py-4 text-sm text-gray-500">
                                 {{ $pelanggan->created_at->format('d M Y') }}
                             </td>
-                            <td class="px-6 py-4">
-                                <div class="flex items-center space-x-2">
-                                    <a href="{{ route('admin.akunpelanggan.edit', $pelanggan->id) }}" 
-                                        class="p-2 text-primary-600 hover:bg-primary-50 rounded-lg transition-all" title="Edit">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                    <form action="{{ route('admin.akunpelanggan.destroy', $pelanggan->id) }}" method="POST" 
-                                        onsubmit="return confirm('Yakin ingin menghapus akun pelanggan ini?')" class="inline">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" 
-                                            class="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-all" title="Hapus">
-                                            <i class="fas fa-trash"></i>
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-6 py-12 text-center">
+                            <td colspan="5" class="px-6 py-12 text-center">
                                 <div class="flex flex-col items-center">
                                     <i class="fas fa-users text-gray-300 text-5xl mb-4"></i>
                                     <p class="text-gray-500 text-lg">Tidak ada data pelanggan</p>
