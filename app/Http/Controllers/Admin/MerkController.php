@@ -109,8 +109,8 @@ class MerkController extends Controller
     {
         $merk = Merk::findOrFail($id);
 
-        // Validasi: tidak bisa hapus jika ada produk terkait
-        if ($merk->produks()->count() > 0) {
+        // Validasi: tidak bisa hapus jika ada produk terkait, termasuk yang soft deleted
+        if ($merk->produks()->withTrashed()->exists()) {
             return back()->with('error', 'Merk tidak bisa dihapus karena masih ada produk terkait.');
         }
 

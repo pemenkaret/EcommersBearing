@@ -109,8 +109,8 @@ class KategoriController extends Controller
     {
         $kategori = Kategori::findOrFail($id);
 
-        // Validasi: tidak bisa hapus jika ada produk terkait
-        if ($kategori->produks()->count() > 0) {
+        // Validasi: tidak bisa hapus jika ada produk terkait, termasuk yang soft deleted
+        if ($kategori->produks()->withTrashed()->exists()) {
             return back()->with('error', 'Kategori tidak bisa dihapus karena masih ada produk terkait.');
         }
 
