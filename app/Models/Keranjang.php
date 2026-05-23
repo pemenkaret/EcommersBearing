@@ -108,16 +108,15 @@ class Keranjang extends Model
 
     /**
      * Menghitung grand total keranjang user.
+     * Dihitung di level database agar tidak fetch semua row.
      *
      * @param int $userId
      * @return float
      */
     public static function getGrandTotal(int $userId): float
     {
-        $items = static::where('user_id', $userId)->get();
-
-        return $items->sum(function ($item) {
-            return $item->subtotal;
-        });
+        return (float) static::where('user_id', $userId)
+            ->selectRaw('COALESCE(SUM(harga * quantity), 0) AS total')
+            ->value('total');
     }
 }

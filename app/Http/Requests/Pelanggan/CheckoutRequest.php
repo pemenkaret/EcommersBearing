@@ -16,7 +16,7 @@ class CheckoutRequest extends FormRequest
     {
         // Get list of active metode pembayaran IDs
         $metodePembayaranIds = MetodePembayaran::where('is_active', true)->pluck('id')->toArray();
-        
+
         return [
             'alamat_id' => ['required', 'exists:alamats,id'],
             'metode_pembayaran_id' => ['required', 'exists:metode_pembayarans,id', function ($attribute, $value, $fail) use ($metodePembayaranIds) {
@@ -24,7 +24,8 @@ class CheckoutRequest extends FormRequest
                     $fail('Metode pembayaran tidak valid atau tidak aktif.');
                 }
             }],
-            'ongkir' => ['required', 'numeric', 'min:0'],
+            // Catatan: ongkir TIDAK diterima dari client. Selalu dihitung ulang
+            // di server (CheckoutController) memakai Ongkir::hitungOngkirDenganSubtotal.
             'catatan' => ['nullable', 'string', 'max:500'],
         ];
     }
@@ -36,8 +37,6 @@ class CheckoutRequest extends FormRequest
             'alamat_id.exists' => 'Alamat tidak valid',
             'metode_pembayaran_id.required' => 'Metode pembayaran wajib dipilih',
             'metode_pembayaran_id.exists' => 'Metode pembayaran tidak valid',
-            'ongkir.required' => 'Ongkos kirim wajib diisi',
-            'ongkir.numeric' => 'Ongkos kirim harus berupa angka',
             'catatan.max' => 'Catatan maksimal 500 karakter',
         ];
     }

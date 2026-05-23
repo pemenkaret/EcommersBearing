@@ -212,6 +212,8 @@
                             </label>
                             <div class="relative">
                                 <input type="number" name="stok" value="{{ old('stok', $produk->stok) }}" required min="0"
+                                    inputmode="numeric"
+                                    oninput="stripLeadingZeros(this)"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent @error('stok') border-red-500 @enderror">
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">pcs</span>
                             </div>
@@ -227,6 +229,8 @@
                             </label>
                             <div class="relative">
                                 <input type="number" name="min_stok" value="{{ old('min_stok', $produk->min_stok) }}" required min="0"
+                                    inputmode="numeric"
+                                    oninput="stripLeadingZeros(this)"
                                     class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent @error('min_stok') border-red-500 @enderror">
                                 <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">pcs</span>
                             </div>
@@ -262,6 +266,16 @@
                             return;
                         }
                         input.value = new Intl.NumberFormat('id-ID').format(value);
+                    }
+
+                    // Hapus leading zero pada input integer; "007" -> "7", "0" tetap "0", "" tetap ""
+                    function stripLeadingZeros(input) {
+                        const cleaned = input.value.replace(/[^\d]/g, '');
+                        if (cleaned === '') {
+                            input.value = '';
+                            return;
+                        }
+                        input.value = cleaned.replace(/^0+(?=\d)/, '');
                     }
                     
                     // Before form submit, convert formatted price back to plain digits

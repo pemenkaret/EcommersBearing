@@ -14,24 +14,26 @@ class UserSeeder extends Seeder
      public function run(): void
      {
           // Admin User
-          User::create([
-               'role_id' => 1,
+          $admin = new User([
                'name' => 'Admin',
                'email' => 'admin@bearing.com',
                'password' => Hash::make('password'),
                'email_verified_at' => now(),
                'is_active' => true,
           ]);
+          $admin->role_id = 1;
+          $admin->save();
 
           // Owner User
-          User::create([
-               'role_id' => 3,
+          $owner = new User([
                'name' => 'Owner',
                'email' => 'owner@bearing.com',
                'password' => Hash::make('password'),
                'email_verified_at' => now(),
                'is_active' => true,
           ]);
+          $owner->role_id = 3;
+          $owner->save();
 
           // Sample Pelanggan Users
           $pelanggan = [
@@ -43,8 +45,7 @@ class UserSeeder extends Seeder
           ];
 
           foreach ($pelanggan as $data) {
-               User::create([
-                    'role_id' => 2,
+               $u = new User([
                     'name' => $data['name'],
                     'email' => $data['email'],
                     'telepon' => $data['telepon'],
@@ -52,6 +53,8 @@ class UserSeeder extends Seeder
                     'email_verified_at' => now(),
                     'is_active' => true,
                ]);
+               $u->role_id = 2;
+               $u->save();
           }
      }
 }

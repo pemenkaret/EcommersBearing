@@ -73,9 +73,17 @@ class CheckoutController extends Controller
         
         DB::beginTransaction();
         try {
-            // Validasi stok
+            // Lock produk rows untuk mencegah race condition stok
+            $produkIds = $keranjangs->pluck('produk_id')->all();
+            $lockedProduks = Produk::whereIn('id', $produkIds)
+                ->lockForUpdate()
+                ->get()
+                ->keyBy('id');
+
+            // Validasi stok pakai data terkunci
             foreach ($keranjangs as $item) {
-                if ($item->produk->stok < $item->quantity) {
+                $lockedProduk = $lockedProduks->get($item->produk_id);
+                if (!$lockedProduk || $lockedProduk->stok < $item->quantity) {
                     throw new \Exception("Stok {$item->produk->nama} tidak mencukupi.");
                 }
             }
@@ -128,10 +136,11 @@ class CheckoutController extends Controller
                     'quantity' => $item->quantity,
                     'subtotal' => $item->subtotal,
                 ]);
-                
-                // Decrement stok
-                $item->produk->decrementStok($item->quantity);
-                $item->produk->increment('sold_count', $item->quantity);
+
+                // Decrement stok pakai produk yang sudah dikunci
+                $lockedProduk = $lockedProduks->get($item->produk_id);
+                $lockedProduk->decrement('stok', $item->quantity);
+                $lockedProduk->increment('sold_count', $item->quantity);
             }
             
             // Create Order Status
@@ -159,16 +168,16 @@ class CheckoutController extends Controller
             'alamat_id' => 'required|exists:alamats,id',
             'metode_pembayaran_id' => 'required|exists:metode_pembayarans,id',
         ]);
-        
-        $produk = Produk::findOrFail($request->produk_id);
-        
-        // Check stok
-        if ($produk->stok < $request->quantity) {
-            return back()->with('error', 'Stok tidak mencukupi.');
-        }
-        
+
         DB::beginTransaction();
         try {
+            // Lock produk untuk mencegah race condition stok
+            $produk = Produk::where('id', $request->produk_id)->lockForUpdate()->firstOrFail();
+
+            if ($produk->stok < $request->quantity) {
+                throw new \Exception('Stok tidak mencukupi.');
+            }
+
             $alamat = auth()->user()->alamats()->findOrFail($request->alamat_id);
             $metodePembayaran = MetodePembayaran::findOrFail($request->metode_pembayaran_id);
             
@@ -211,8 +220,8 @@ class CheckoutController extends Controller
                 'subtotal' => $subtotal,
             ]);
             
-            // Decrement stok
-            $produk->decrementStok($request->quantity);
+            // Decrement stok (produk sudah dikunci di atas)
+            $produk->decrement('stok', $request->quantity);
             $produk->increment('sold_count', $request->quantity);
             
             // Create Order Status

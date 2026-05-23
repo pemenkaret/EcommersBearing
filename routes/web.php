@@ -51,7 +51,7 @@ Route::prefix('api/wilayah')->name('api.wilayah.')->group(function () {
 | Memerlukan autentikasi user.
 |
 */
-Route::prefix('api/ongkir')->name('api.ongkir.')->middleware('auth')->group(function () {
+Route::prefix('api/ongkir')->name('api.ongkir.')->middleware(['auth', 'role:pelanggan'])->group(function () {
     Route::post('/hitung-by-alamat', [OngkirController::class, 'hitungByAlamat'])->name('hitung-by-alamat');
     Route::post('/hitung-by-provinsi', [OngkirController::class, 'hitungByProvinsi'])->name('hitung-by-provinsi');
 });
@@ -65,16 +65,20 @@ Route::prefix('api/ongkir')->name('api.ongkir.')->middleware('auth')->group(func
 |
 */
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
-Route::post('/login', [AuthController::class, 'login']);
+Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
-Route::post('/register', [AuthController::class, 'register']);
+Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // Password Reset Routes
 Route::get('/forgot-password', [PasswordResetController::class, 'showForgotForm'])->name('password.request');
-Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])->name('password.email');
+Route::post('/forgot-password', [PasswordResetController::class, 'sendResetLink'])
+    ->middleware('throttle:5,1')
+    ->name('password.email');
 Route::get('/reset-password/{token}', [PasswordResetController::class, 'showResetForm'])->name('password.reset');
-Route::post('/reset-password', [PasswordResetController::class, 'reset'])->name('password.update');
+Route::post('/reset-password', [PasswordResetController::class, 'reset'])
+    ->middleware('throttle:5,1')
+    ->name('password.update');
 
 /*
 |--------------------------------------------------------------------------

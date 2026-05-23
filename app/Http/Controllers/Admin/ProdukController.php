@@ -10,6 +10,7 @@ use App\Models\ProdukImage;
 use App\Models\Kategori;
 use App\Models\Merk;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class ProdukController extends Controller
@@ -56,7 +57,9 @@ class ProdukController extends Controller
     public function store(ProdukStoreRequest $request)
     {
         $data = $request->validated();
-        
+        // Buang field non-DB sebelum mass assignment (file upload bukan kolom)
+        unset($data['images']);
+
         // Auto generate SKU jika kosong
         if (empty($data['sku'])) {
             // Cari nomor SKU tertinggi yang sudah ada (termasuk yang soft-deleted)
@@ -69,17 +72,22 @@ class ProdukController extends Controller
             $data['sku'] = 'BRG-' . str_pad($number, 5, '0', STR_PAD_LEFT);
         }
         
-        // Auto generate slug
-        $data['slug'] = Str::slug($request->nama);
+        // Auto generate slug unik
+        $data['slug'] = $this->generateUniqueSlug($request->nama);
         
         $produk = Produk::create($data);
         
         // Upload images
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $index => $image) {
-                $imageName = time() . '_' . $index . '.' . $image->getClientOriginalExtension();
+                // Pakai guessExtension() agar tidak percaya extension dari client; whitelist tipe
+                $ext = strtolower($image->guessExtension() ?? '');
+                if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+                    continue;
+                }
+                $imageName = Str::uuid()->toString() . '.' . $ext;
                 $image->storeAs('produk/' . $produk->id, $imageName, 'public');
-                
+
                 ProdukImage::create([
                     'produk_id' => $produk->id,
                     'image_path' => 'produk/' . $produk->id . '/' . $imageName,
@@ -111,20 +119,25 @@ class ProdukController extends Controller
     public function update(ProdukUpdateRequest $request, $id)
     {
         $produk = Produk::findOrFail($id);
-        
+
         $data = $request->validated();
-        $data['slug'] = Str::slug($request->nama);
-        
+        unset($data['images']);
+        $data['slug'] = $this->generateUniqueSlug($request->nama, (int) $produk->id);
+
         $produk->update($data);
         
         // Upload new images
         if ($request->hasFile('images')) {
             $existingImagesCount = $produk->images()->count();
-            
+
             foreach ($request->file('images') as $index => $image) {
-                $imageName = time() . '_' . ($existingImagesCount + $index) . '.' . $image->getClientOriginalExtension();
+                $ext = strtolower($image->guessExtension() ?? '');
+                if (! in_array($ext, ['jpg', 'jpeg', 'png', 'webp'], true)) {
+                    continue;
+                }
+                $imageName = Str::uuid()->toString() . '.' . $ext;
                 $image->storeAs('produk/' . $produk->id, $imageName, 'public');
-                
+
                 ProdukImage::create([
                     'produk_id' => $produk->id,
                     'image_path' => 'produk/' . $produk->id . '/' . $imageName,
@@ -149,5 +162,28 @@ class ProdukController extends Controller
     {
         // TODO: Implement Excel export
         return back()->with('info', 'Fitur export akan segera tersedia.');
+    }
+
+    // Buat slug unik dari nama produk; cek juga soft-deleted agar tidak bentrok unique constraint
+    private function generateUniqueSlug(string $nama, ?int $ignoreId = null): string
+    {
+        $base = Str::slug($nama);
+        if ($base === '') {
+            $base = 'produk';
+        }
+
+        $slug = $base;
+        $i = 1;
+
+        while (
+            Produk::withTrashed()
+                ->where('slug', $slug)
+                ->when($ignoreId !== null, fn ($q) => $q->where('id', '!=', $ignoreId))
+                ->exists()
+        ) {
+            $slug = $base . '-' . $i++;
+        }
+
+        return $slug;
     }
 }

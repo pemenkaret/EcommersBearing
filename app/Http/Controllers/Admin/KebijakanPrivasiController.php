@@ -42,12 +42,12 @@ class KebijakanPrivasiController extends Controller
             $kebijakanPrivasi = new KebijakanPrivasi();
         }
 
-        // Convert items array to JSON for storage
+        // Items akan disanitize & encode otomatis lewat mutator KebijakanPrivasi::setKontenAttribute
         $items = array_values($request->items); // Re-index array
-        
+
         $data = [
             'judul' => $request->judul,
-            'konten' => json_encode($items),
+            'konten' => $items,
             'tanggal_berlaku' => $request->tanggal_berlaku,
             'is_active' => $request->boolean('is_active'),
         ];

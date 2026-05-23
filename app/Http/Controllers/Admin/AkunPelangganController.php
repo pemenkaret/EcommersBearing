@@ -63,11 +63,8 @@ class AkunPelangganController extends Controller
     {
         $pelanggan = User::findOrFail($id);
 
-        // Check jika ada order terkait
-        if ($pelanggan->orders()->count() > 0) {
-            return back()->with('error', 'Akun pelanggan tidak bisa dihapus karena masih ada pesanan terkait.');
-        }
-
+        // Soft delete: order historis tetap utuh karena kolom snapshot
+        // alamat/produk sudah disimpan di tabel orders & order_items.
         $pelanggan->delete();
 
         return back()->with('success', 'Akun pelanggan berhasil dihapus.');

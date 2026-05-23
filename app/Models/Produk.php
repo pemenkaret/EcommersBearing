@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -169,6 +170,12 @@ class Produk extends Model
         if (empty($this->attributes['slug'])) {
             $this->attributes['slug'] = Str::slug($value);
         }
+    }
+
+    // Sanitize deskripsi produk untuk mencegah XSS pada output {!! !!}
+    public function setDeskripsiAttribute(?string $value): void
+    {
+        $this->attributes['deskripsi'] = HtmlSanitizer::clean($value);
     }
 
     /*

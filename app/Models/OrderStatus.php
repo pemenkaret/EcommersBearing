@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -63,22 +62,5 @@ class OrderStatus extends Model
     public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
-    }
-
-    /*
-    |--------------------------------------------------------------------------
-    | SCOPES
-    |--------------------------------------------------------------------------
-    */
-
-    /**
-     * Scope untuk mengurutkan berdasarkan waktu terbaru.
-     *
-     * @param Builder $query
-     * @return Builder
-     */
-    public function scopeOrdered(Builder $query): Builder
-    {
-        return $query->orderBy('created_at', 'desc');
     }
 }

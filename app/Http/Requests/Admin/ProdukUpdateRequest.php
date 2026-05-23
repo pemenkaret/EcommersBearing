@@ -19,6 +19,8 @@ class ProdukUpdateRequest extends FormRequest
         $this->merge([
             'harga' => $this->normalizePrice($this->input('harga')),
             'harga_diskon' => $this->normalizePrice($this->input('harga_diskon')),
+            'stok' => $this->normalizeInteger($this->input('stok')),
+            'min_stok' => $this->normalizeInteger($this->input('min_stok')),
         ]);
     }
 
@@ -35,6 +37,21 @@ class ProdukUpdateRequest extends FormRequest
         $normalized = preg_replace('/[^\d]/', '', (string) $value);
 
         return $normalized === '' ? null : $normalized;
+    }
+
+    // Strip leading zero pada integer; "007" -> "7", "0" tetap "0", non-digit ditolak ke validator
+    private function normalizeInteger(mixed $value): mixed
+    {
+        if ($value === null || $value === '') {
+            return $value;
+        }
+
+        $str = (string) $value;
+        if (! preg_match('/^\d+$/', $str)) {
+            return $value;
+        }
+
+        return ltrim($str, '0') === '' ? '0' : ltrim($str, '0');
     }
 
     /**

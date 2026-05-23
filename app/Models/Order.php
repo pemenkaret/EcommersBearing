@@ -252,18 +252,25 @@ class Order extends Model
      * Generate nomor order unik.
      * Format: ORD-YYYYMMDD-XXXX
      *
+     * Memakai DB lock untuk mencegah race condition pada concurrent checkout.
+     *
      * @return string
      */
     public static function generateOrderNumber(): string
     {
         $date = Carbon::now()->format('Ymd');
-        $lastOrder = static::whereDate('created_at', Carbon::today())
-                          ->orderBy('id', 'desc')
-                          ->first();
 
-        $number = $lastOrder ? intval(substr($lastOrder->order_number, -4)) + 1 : 1;
+        return \DB::transaction(function () use ($date) {
+            $lastOrder = static::whereDate('created_at', Carbon::today())
+                ->where('order_number', 'like', "ORD-{$date}-%")
+                ->lockForUpdate()
+                ->orderBy('id', 'desc')
+                ->first();
 
-        return 'ORD-' . $date . '-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+            $number = $lastOrder ? intval(substr($lastOrder->order_number, -4)) + 1 : 1;
+
+            return 'ORD-' . $date . '-' . str_pad($number, 4, '0', STR_PAD_LEFT);
+        });
     }
 
     /*
@@ -282,16 +289,24 @@ class Order extends Model
      */
     public function updateStatus(string $status, ?string $keterangan = null, ?int $adminId = null): void
     {
-        $this->update(['status' => $status]);
+        $updates = [];
+
+        if ($this->status !== $status) {
+            $updates['status'] = $status;
+        }
 
         // Jika status paid, update paid_at
         if ($status === 'paid' && !$this->paid_at) {
-            $this->update(['paid_at' => now()]);
+            $updates['paid_at'] = now();
         }
 
         // Jika status cancelled, update cancelled_at
         if ($status === 'cancelled' && !$this->cancelled_at) {
-            $this->update(['cancelled_at' => now()]);
+            $updates['cancelled_at'] = now();
+        }
+
+        if (!empty($updates)) {
+            $this->update($updates);
         }
 
         // Catat riwayat status
@@ -347,24 +362,33 @@ class Order extends Model
             return false;
         }
 
-        $this->update([
-            'status' => 'cancelled',
-            'cancelled_reason' => $reason,
-            'cancelled_at' => now(),
-        ]);
+        return \DB::transaction(function () use ($reason) {
+            $this->update([
+                'status' => 'cancelled',
+                'cancelled_reason' => $reason,
+                'cancelled_at' => now(),
+            ]);
 
-        // Kembalikan stok produk
-        foreach ($this->items as $item) {
-            $item->produk->incrementStok($item->quantity);
-        }
+            // Eager load produk agar tidak N+1 saat increment stok
+            $this->load('items.produk');
 
-        // Catat riwayat status
-        OrderStatus::create([
-            'order_id' => $this->id,
-            'status' => 'cancelled',
-            'keterangan' => $reason,
-        ]);
+            // Kembalikan stok produk dengan lock untuk konsistensi
+            foreach ($this->items as $item) {
+                if ($item->produk) {
+                    Produk::where('id', $item->produk_id)
+                        ->lockForUpdate()
+                        ->increment('stok', $item->quantity);
+                }
+            }
 
-        return true;
+            // Catat riwayat status
+            OrderStatus::create([
+                'order_id' => $this->id,
+                'status' => 'cancelled',
+                'keterangan' => $reason,
+            ]);
+
+            return true;
+        });
     }
 }

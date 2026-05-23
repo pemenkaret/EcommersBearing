@@ -48,25 +48,21 @@ class PembelianController extends Controller
         ]);
         
         if ($request->hasFile('bukti_pembayaran')) {
-            // Pastikan folder ada di disk public
-            if (!Storage::disk('public')->exists('bukti-pembayaran')) {
-                Storage::disk('public')->makeDirectory('bukti-pembayaran');
-            }
-            
             // Hapus bukti lama jika ada
             if ($order->bukti_pembayaran && Storage::disk('public')->exists($order->bukti_pembayaran)) {
                 Storage::disk('public')->delete($order->bukti_pembayaran);
             }
-            
+
             $file = $request->file('bukti_pembayaran');
-            $fileName = 'bukti_' . $order->order_number . '_' . time() . '.' . $file->getClientOriginalExtension();
+            $ext = strtolower($file->guessExtension() ?? 'jpg');
+            $fileName = 'bukti_' . $order->order_number . '_' . \Illuminate\Support\Str::uuid()->toString() . '.' . $ext;
             $path = $file->storeAs('bukti-pembayaran', $fileName, 'public');
-            
+
             if ($path) {
                 $order->update([
                     'bukti_pembayaran' => $path,
                 ]);
-                
+
                 return back()->with('success', 'Bukti pembayaran berhasil diupload. Menunggu verifikasi admin.');
             }
         }

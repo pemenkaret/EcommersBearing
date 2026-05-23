@@ -92,7 +92,7 @@
                                         <p class="text-gray-500">a.n {{ $metode->bank_atas_nama }}</p>
                                     </div>
                                 @else
-                                    <span class="text-gray-400">-</span>
+                                    <span class="text-xs text-gray-400 italic">Tidak berlaku (bukan transfer bank)</span>
                                 @endif
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap">

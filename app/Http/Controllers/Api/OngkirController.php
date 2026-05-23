@@ -19,8 +19,11 @@ class OngkirController extends Controller
             'subtotal' => 'nullable|numeric|min:0',
         ]);
 
-        $alamat = Alamat::find($request->alamat_id);
-        
+        // Cegah IDOR: alamat harus milik user yang sedang login
+        $alamat = Alamat::where('user_id', auth()->id())
+            ->where('id', $request->alamat_id)
+            ->first();
+
         if (!$alamat) {
             return response()->json([
                 'success' => false,

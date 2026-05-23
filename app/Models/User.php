@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
@@ -21,18 +22,13 @@ use Illuminate\Notifications\Notifiable;
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
-    /**
-     * Atribut yang dapat diisi secara massal.
-     *
-     * @var array<int, string>
-     */
+    // role_id dikecualikan dari fillable untuk cegah privilege escalation via mass assignment; set lewat penugasan langsung
     protected $fillable = [
         'name',
         'email',
         'password',
-        'role_id',
         'telepon',
         'avatar',
         'is_active',
@@ -145,7 +141,7 @@ class User extends Authenticatable
     /**
      * Check apakah user adalah pelanggan
      */
-    public function isPelanggan()
+    public function isPelanggan(): bool
     {
         return $this->role && $this->role->name === 'pelanggan';
     }
@@ -153,7 +149,7 @@ class User extends Authenticatable
     /**
      * Get alamat default
      */
-    public function getDefaultAlamat()
+    public function getDefaultAlamat(): ?Alamat
     {
         return $this->alamats()->where('is_default', true)->first()
             ?? $this->alamats()->first();
@@ -162,7 +158,7 @@ class User extends Authenticatable
     /**
      * Update last login timestamp
      */
-    public function updateLastLogin()
+    public function updateLastLogin(): void
     {
         $this->update(['last_login_at' => now()]);
     }

@@ -168,6 +168,8 @@
                     </label>
                     <div class="relative">
                         <input type="number" name="stok" value="{{ old('stok', 0) }}" required min="0"
+                            inputmode="numeric"
+                            oninput="stripLeadingZeros(this)"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent @error('stok') border-red-500 @enderror">
                         <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">pcs</span>
                     </div>
@@ -183,6 +185,8 @@
                     </label>
                     <div class="relative">
                         <input type="number" name="min_stok" value="{{ old('min_stok', 5) }}" required min="0"
+                            inputmode="numeric"
+                            oninput="stripLeadingZeros(this)"
                             class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent @error('min_stok') border-red-500 @enderror">
                         <span class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 text-sm">pcs</span>
                     </div>
@@ -219,6 +223,16 @@
                 }
                 input.value = new Intl.NumberFormat('id-ID').format(value);
             }
+
+            // Hapus leading zero pada input integer; "007" -> "7", "0" tetap "0", "" tetap ""
+            function stripLeadingZeros(input) {
+                const cleaned = input.value.replace(/[^\d]/g, '');
+                if (cleaned === '') {
+                    input.value = '';
+                    return;
+                }
+                input.value = cleaned.replace(/^0+(?=\d)/, '');
+            }
             
             // Before form submit, convert formatted price back to plain digits
             const produkCreateForm = document.getElementById('produk-create-form');
@@ -229,6 +243,52 @@
                     if (harga) harga.value = harga.value.replace(/[^\d]/g, '');
                     if (hargaDiskon) hargaDiskon.value = hargaDiskon.value.replace(/[^\d]/g, '');
                 });
+            }
+
+            // Alpine component untuk dropzone gambar produk
+            function produkImageUploader() {
+                return {
+                    dragOver: false,
+                    files: [],
+                    previews: [],
+                    handleFiles(fileList) {
+                        const incoming = Array.from(fileList || []);
+                        const accepted = incoming.filter(f => /^image\/(jpeg|png|webp|jpg)$/i.test(f.type));
+                        accepted.forEach(f => {
+                            this.files.push(f);
+                            this.previews.push({
+                                id: Date.now() + '_' + Math.random().toString(36).slice(2),
+                                name: f.name,
+                                url: URL.createObjectURL(f),
+                            });
+                        });
+                        this.syncInput();
+                    },
+                    onDrop(e) {
+                        this.dragOver = false;
+                        if (e.dataTransfer && e.dataTransfer.files) {
+                            this.handleFiles(e.dataTransfer.files);
+                        }
+                    },
+                    removeAt(idx) {
+                        const removed = this.previews.splice(idx, 1)[0];
+                        this.files.splice(idx, 1);
+                        if (removed && removed.url) URL.revokeObjectURL(removed.url);
+                        this.syncInput();
+                    },
+                    clearAll() {
+                        this.previews.forEach(p => p.url && URL.revokeObjectURL(p.url));
+                        this.previews = [];
+                        this.files = [];
+                        this.syncInput();
+                    },
+                    // Sinkronkan internal files ke <input type=file> agar terkirim saat submit
+                    syncInput() {
+                        const dt = new DataTransfer();
+                        this.files.forEach(f => dt.items.add(f));
+                        this.$refs.fileInput.files = dt.files;
+                    },
+                };
             }
         </script>
 
@@ -303,12 +363,91 @@
                     <label class="block text-sm font-medium text-gray-700 mb-2">
                         Gambar Produk
                     </label>
-                    <input type="file" name="images[]" multiple accept="image/jpeg,image/png,image/jpg,image/webp"
-                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent @error('images.*') border-red-500 @enderror">
-                    @error('images.*')
-                        <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                    @enderror
-                    <p class="text-gray-500 text-xs mt-1">Format: jpeg, png, jpg, webp. Maksimal 2MB per gambar. Gambar pertama akan jadi thumbnail.</p>
+
+                    <div x-data="produkImageUploader()" x-cloak class="space-y-3">
+                        {{-- Hidden input asli; dikontrol via Alpine ref --}}
+                        <input
+                            type="file"
+                            name="images[]"
+                            x-ref="fileInput"
+                            multiple
+                            accept="image/jpeg,image/png,image/jpg,image/webp"
+                            class="hidden"
+                            @change="handleFiles($event.target.files)">
+
+                        {{-- Dropzone --}}
+                        <div
+                            @click="$refs.fileInput.click()"
+                            @dragover.prevent="dragOver = true"
+                            @dragleave.prevent="dragOver = false"
+                            @drop.prevent="onDrop($event)"
+                            :class="dragOver
+                                ? 'border-primary-500 bg-primary-50'
+                                : 'border-gray-300 hover:border-primary-400 hover:bg-gray-50'"
+                            class="cursor-pointer border-2 border-dashed rounded-xl p-6 text-center transition-all">
+                            <div class="flex flex-col items-center justify-center space-y-2">
+                                <div class="w-14 h-14 bg-primary-100 rounded-full flex items-center justify-center">
+                                    <i class="fas fa-cloud-upload-alt text-primary-600 text-2xl"></i>
+                                </div>
+                                <p class="text-sm font-medium text-gray-700">
+                                    <span class="text-primary-600">Klik untuk pilih</span> atau seret gambar ke sini
+                                </p>
+                                <p class="text-xs text-gray-500">
+                                    JPG, PNG, JPEG, WEBP &middot; Maks 2MB per file
+                                </p>
+                                <p class="text-xs text-gray-400" x-show="previews.length === 0">
+                                    Gambar pertama otomatis jadi thumbnail
+                                </p>
+                            </div>
+                        </div>
+
+                        {{-- Counter & Aksi --}}
+                        <div class="flex items-center justify-between" x-show="previews.length > 0">
+                            <p class="text-xs text-gray-600">
+                                <i class="fas fa-images mr-1 text-primary-600"></i>
+                                <span x-text="previews.length"></span> gambar dipilih
+                            </p>
+                            <button type="button"
+                                @click="clearAll()"
+                                class="text-xs text-red-600 hover:text-red-700 font-medium">
+                                <i class="fas fa-trash-alt mr-1"></i>Hapus semua
+                            </button>
+                        </div>
+
+                        {{-- Preview Grid --}}
+                        <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"
+                            x-show="previews.length > 0">
+                            <template x-for="(item, idx) in previews" :key="item.id">
+                                <div class="relative group rounded-lg overflow-hidden border border-gray-200 bg-gray-50 aspect-square">
+                                    <img :src="item.url" :alt="item.name"
+                                        class="w-full h-full object-cover">
+
+                                    {{-- Badge primary (gambar pertama) --}}
+                                    <span x-show="idx === 0"
+                                        class="absolute top-1 left-1 px-2 py-0.5 bg-primary-600 text-white text-[10px] font-semibold rounded-full">
+                                        <i class="fas fa-star mr-0.5"></i>Thumbnail
+                                    </span>
+
+                                    {{-- Tombol hapus --}}
+                                    <button type="button"
+                                        @click.stop="removeAt(idx)"
+                                        class="absolute top-1 right-1 w-6 h-6 bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center hover:bg-red-700"
+                                        title="Hapus gambar">
+                                        <i class="fas fa-times text-xs"></i>
+                                    </button>
+
+                                    {{-- Nama file --}}
+                                    <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/70 to-transparent p-1.5">
+                                        <p class="text-white text-[10px] truncate" x-text="item.name"></p>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        @error('images.*')
+                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
+                        @enderror
+                    </div>
                 </div>
 
                 <div class="space-y-4">

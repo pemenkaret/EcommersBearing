@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -51,6 +52,45 @@ class KebijakanPrivasi extends Model
         'is_active' => 'boolean',
         'tanggal_berlaku' => 'date',
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | MUTATORS (XSS sanitization)
+    |--------------------------------------------------------------------------
+    */
+
+    // Sanitize konten kebijakan privasi (JSON array of {judul, isi}); tiap item.isi dibersihkan
+    public function setKontenAttribute(mixed $value): void
+    {
+        if (is_array($value)) {
+            foreach ($value as $i => $item) {
+                if (is_array($item) && isset($item['isi'])) {
+                    $value[$i]['isi'] = HtmlSanitizer::clean((string) $item['isi']);
+                }
+            }
+            $this->attributes['konten'] = json_encode(array_values($value));
+            return;
+        }
+
+        if (is_string($value)) {
+            $decoded = json_decode($value, true);
+            if (is_array($decoded)) {
+                foreach ($decoded as $i => $item) {
+                    if (is_array($item) && isset($item['isi'])) {
+                        $decoded[$i]['isi'] = HtmlSanitizer::clean((string) $item['isi']);
+                    }
+                }
+                $this->attributes['konten'] = json_encode(array_values($decoded));
+                return;
+            }
+
+            // Plain string fallback
+            $this->attributes['konten'] = HtmlSanitizer::clean($value);
+            return;
+        }
+
+        $this->attributes['konten'] = $value;
+    }
 
     /*
     |--------------------------------------------------------------------------

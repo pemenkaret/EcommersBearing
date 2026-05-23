@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\HtmlSanitizer;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
@@ -54,6 +55,33 @@ class TentangKami extends Model
     protected $casts = [
         'is_active' => 'boolean',
     ];
+
+    /*
+    |--------------------------------------------------------------------------
+    | MUTATORS (XSS sanitization)
+    |--------------------------------------------------------------------------
+    */
+
+    public function setKontenAttribute(?string $value): void
+    {
+        $this->attributes['konten'] = HtmlSanitizer::clean($value);
+    }
+
+    public function setVisiAttribute(?string $value): void
+    {
+        $this->attributes['visi'] = HtmlSanitizer::clean($value);
+    }
+
+    public function setMisiAttribute(?string $value): void
+    {
+        $this->attributes['misi'] = HtmlSanitizer::clean($value);
+    }
+
+    // Bersihkan HTML dari tag/atribut berbahaya untuk mencegah XSS
+    public static function sanitizeHtml(?string $value): ?string
+    {
+        return HtmlSanitizer::clean($value);
+    }
 
     /*
     |--------------------------------------------------------------------------

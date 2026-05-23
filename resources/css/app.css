@@ -100,3 +100,6 @@ input[type="number"] {
 .scrollbar-hide::-webkit-scrollbar {
     display: none;  /* Chrome, Safari and Opera */
 }
+
+/* Hide Alpine x-cloak elements until init */
+[x-cloak] { display: none !important; }
