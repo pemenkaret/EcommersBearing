@@ -91,25 +91,28 @@
     </div>
 
     <!-- Bagian Kategori -->
-    <div id="categories" class="mb-8">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-900 mb-1">Kategori Bearing</h2>
-                <p class="text-gray-600">Pilih kategori sesuai kebutuhan Anda</p>
+    <div id="categories" class="mb-8 bg-white rounded-xl border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+            <div class="flex items-center gap-3">
+                <span class="block w-1 h-8 bg-primary-600 rounded-full"></span>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Kategori Bearing</h2>
+                    <p class="text-gray-500 text-sm">Pilih kategori sesuai kebutuhan Anda</p>
+                </div>
             </div>
         </div>
-        
+
         <!-- Mobile: Horizontal Scroll -->
-        <div class="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+        <div class="md:hidden overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide">
             <div class="flex gap-3" style="width: max-content;">
                 @forelse($kategoris as $kategori)
                     <a href="{{ route('pelanggan.produk.index', ['kategori_id' => $kategori->id]) }}"
-                        class="bg-white rounded-xl p-4 shadow-md hover:shadow-xl transition-all group flex-shrink-0 w-28">
-                        <div class="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center mb-3 mx-auto group-hover:bg-primary-200 transition-all">
+                        class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-primary-300 transition-colors flex-shrink-0 w-28">
+                        <div class="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center mb-3 mx-auto">
                             <i class="fas fa-layer-group text-primary-600 text-xl"></i>
                         </div>
-                        <h3 class="font-semibold text-gray-900 text-center mb-1 text-xs line-clamp-2">{{ $kategori->nama }}</h3>
-                        <p class="text-gray-500 text-[10px] text-center">{{ $kategori->produks_count ?? $kategori->produks->count() }} produk</p>
+                        <h3 class="font-semibold text-gray-900 text-center mb-0.5 text-xs line-clamp-2">{{ $kategori->nama }}</h3>
+                        <p class="text-gray-400 text-[10px] text-center">{{ $kategori->produks_count ?? $kategori->produks->count() }} produk</p>
                     </a>
                 @empty
                     <div class="text-center py-8 text-gray-500 w-full">
@@ -119,17 +122,17 @@
                 @endforelse
             </div>
         </div>
-        
+
         <!-- Desktop: Grid -->
-        <div class="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-4">
+        <div class="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-3">
             @forelse($kategoris as $kategori)
                 <a href="{{ route('pelanggan.produk.index', ['kategori_id' => $kategori->id]) }}"
-                    class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all group">
-                    <div class="w-16 h-16 bg-primary-100 rounded-lg flex items-center justify-center mb-4 mx-auto group-hover:bg-primary-200 transition-all">
-                        <i class="fas fa-layer-group text-primary-600 text-3xl"></i>
+                    class="bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-primary-300 transition-colors">
+                    <div class="w-14 h-14 bg-primary-50 rounded-lg flex items-center justify-center mb-3 mx-auto">
+                        <i class="fas fa-layer-group text-primary-600 text-2xl"></i>
                     </div>
-                    <h3 class="font-bold text-gray-900 text-center mb-1 text-sm">{{ $kategori->nama }}</h3>
-                    <p class="text-gray-500 text-xs text-center">{{ $kategori->produks_count ?? $kategori->produks->count() }} produk</p>
+                    <h3 class="font-semibold text-gray-900 text-center mb-1 text-sm line-clamp-2 min-h-10">{{ $kategori->nama }}</h3>
+                    <p class="text-gray-400 text-xs text-center">{{ $kategori->produks_count ?? $kategori->produks->count() }} produk</p>
                 </a>
             @empty
                 <div class="col-span-6 text-center py-8 text-gray-500">
@@ -142,27 +145,30 @@
 
     <!-- Bagian Brand Premium -->
     @if($merksPremium->count() > 0)
-        <div class="mb-8">
-            <div class="flex items-center justify-between mb-6">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900 mb-1">Brand Premium</h2>
-                    <p class="text-gray-600">Bearing dari brand ternama dunia</p>
+        <div class="mb-8 bg-white rounded-xl border border-gray-200 p-6">
+            <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+                <div class="flex items-center gap-3">
+                    <span class="block w-1 h-8 bg-primary-600 rounded-full"></span>
+                    <div>
+                        <h2 class="text-xl font-bold text-gray-900">Brand Premium</h2>
+                        <p class="text-gray-500 text-sm">Bearing dari brand ternama dunia</p>
+                    </div>
                 </div>
                 <a href="{{ route('pelanggan.produk.index') }}"
-                    class="text-primary-600 hover:text-primary-700 font-semibold flex items-center">
-                    Lihat Semua <i class="fas fa-arrow-right ml-2"></i>
+                    class="text-primary-600 font-medium text-sm flex items-center">
+                    Lihat Semua <i class="fas fa-arrow-right ml-2 text-xs"></i>
                 </a>
             </div>
-            
+
             <!-- Mobile: Horizontal Scroll -->
-            <div class="md:hidden overflow-x-auto pb-4 -mx-4 px-4 scrollbar-hide">
+            <div class="md:hidden overflow-x-auto pb-2 -mx-2 px-2 scrollbar-hide">
                 <div class="flex gap-3" style="width: max-content;">
                     @foreach($merksPremium as $merk)
                         <a href="{{ route('pelanggan.produk.index', ['merk_id' => $merk->id]) }}"
-                            class="bg-white rounded-xl p-4 shadow-md hover:shadow-xl transition-all group text-center flex-shrink-0 w-28">
+                            class="bg-gray-50 rounded-lg p-4 border border-gray-200 hover:border-primary-300 transition-colors text-center flex-shrink-0 w-28">
                             @if($merk->logo)
-                                <img src="{{ asset('storage/' . $merk->logo) }}" alt="{{ $merk->nama }}" 
-                                    class="h-8 object-contain mx-auto mb-2 group-hover:scale-110 transition-transform">
+                                <img src="{{ asset('storage/' . $merk->logo) }}" alt="{{ $merk->nama }}"
+                                    class="h-8 object-contain mx-auto mb-2">
                             @else
                                 <div class="h-8 flex items-center justify-center mb-2">
                                     <span class="text-sm font-bold text-gray-700">{{ $merk->nama }}</span>
@@ -173,15 +179,15 @@
                     @endforeach
                 </div>
             </div>
-            
+
             <!-- Desktop: Grid -->
-            <div class="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-4">
+            <div class="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-3">
                 @foreach($merksPremium as $merk)
                     <a href="{{ route('pelanggan.produk.index', ['merk_id' => $merk->id]) }}"
-                        class="bg-white rounded-xl p-6 shadow-md hover:shadow-xl transition-all group text-center">
+                        class="bg-gray-50 rounded-lg p-5 border border-gray-200 hover:border-primary-300 transition-colors text-center">
                         @if($merk->logo)
-                            <img src="{{ asset('storage/' . $merk->logo) }}" alt="{{ $merk->nama }}" 
-                                class="h-12 object-contain mx-auto mb-3 group-hover:scale-110 transition-transform">
+                            <img src="{{ asset('storage/' . $merk->logo) }}" alt="{{ $merk->nama }}"
+                                class="h-12 object-contain mx-auto mb-3">
                         @else
                             <div class="h-12 flex items-center justify-center mb-3">
                                 <span class="text-xl font-bold text-gray-700">{{ $merk->nama }}</span>
@@ -194,59 +200,57 @@
         </div>
     @endif
 
-    <!-- Bagian Produk Terpopuler -->
-    <div class="mb-8">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-900 mb-1">Produk Unggulan</h2>
-                <p class="text-gray-600">Produk bearing yang paling banyak diminati</p>
+    <!-- Bagian Produk Unggulan -->
+    <div class="mb-8 bg-white rounded-xl border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+            <div class="flex items-center gap-3">
+                <span class="block w-1 h-8 bg-primary-600 rounded-full"></span>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Produk Unggulan</h2>
+                    <p class="text-gray-500 text-sm">Produk bearing yang paling banyak diminati</p>
+                </div>
             </div>
             <a href="{{ route('pelanggan.produk.index', ['sort' => 'popular']) }}"
-                class="text-primary-600 hover:text-primary-700 font-semibold flex items-center">
-                Lihat Semua <i class="fas fa-arrow-right ml-2"></i>
+                class="text-primary-600 font-medium text-sm flex items-center">
+                Lihat Semua <i class="fas fa-arrow-right ml-2 text-xs"></i>
             </a>
         </div>
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             @forelse($featuredProducts as $produk)
-                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all overflow-hidden group">
-                    <div class="relative overflow-hidden">
+                <div class="bg-gray-50 rounded-lg border border-gray-200 hover:border-primary-300 transition-colors overflow-hidden flex flex-col">
+                    <div class="relative">
                         @if($produk->images->first())
-                            <img src="{{ asset('storage/' . $produk->images->first()->image_path) }}" 
-                                 alt="{{ $produk->nama }}"
-                                 class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300">
+                            <img src="{{ asset('storage/' . $produk->images->first()->image_path) }}"
+                                alt="{{ $produk->nama }}"
+                                class="w-full aspect-square object-cover bg-white">
                         @else
-                            <div class="w-full h-48 bg-gray-200 flex items-center justify-center group-hover:bg-gray-300 transition-all">
-                                <i class="fas fa-image text-gray-400 text-4xl"></i>
-                            </div>
-                        @endif
-                        @if($produk->is_featured)
-                            <div class="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                                <i class="fas fa-fire mr-1"></i>Unggulan
+                            <div class="w-full aspect-square bg-white flex items-center justify-center">
+                                <i class="fas fa-image text-gray-300 text-4xl"></i>
                             </div>
                         @endif
                         @if($produk->harga_diskon)
-                            <div class="absolute top-2 right-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                            <div class="absolute top-2 right-2 bg-primary-600 text-white text-xs px-2 py-0.5 rounded font-semibold">
                                 -{{ round((($produk->harga - $produk->harga_diskon) / $produk->harga) * 100) }}%
                             </div>
                         @endif
                     </div>
-                    <div class="p-4">
-                        <p class="text-xs text-gray-500 mb-1">{{ $produk->merk->nama ?? '-' }}</p>
-                        <h3 class="font-bold text-gray-900 mb-2 line-clamp-2 min-h-12">{{ $produk->nama }}</h3>
-                        <div class="flex items-center gap-2 mb-3">
+                    <div class="p-4 flex flex-col flex-1">
+                        <p class="text-xs text-gray-400 mb-1 uppercase tracking-wide">{{ $produk->merk->nama ?? '-' }}</p>
+                        <h3 class="font-semibold text-gray-900 mb-3 line-clamp-2 min-h-12 leading-snug">{{ $produk->nama }}</h3>
+                        <div class="mb-3">
                             @if($produk->harga_diskon)
-                                <span class="text-lg font-bold text-primary-600">Rp {{ number_format($produk->harga_diskon, 0, ',', '.') }}</span>
-                                <span class="text-sm text-gray-400 line-through">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
+                                <p class="text-lg font-bold text-primary-600 leading-none">Rp {{ number_format($produk->harga_diskon, 0, ',', '.') }}</p>
+                                <p class="text-xs text-gray-400 line-through mt-0.5">Rp {{ number_format($produk->harga, 0, ',', '.') }}</p>
                             @else
-                                <span class="text-lg font-bold text-primary-600">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
+                                <p class="text-lg font-bold text-primary-600 leading-none">Rp {{ number_format($produk->harga, 0, ',', '.') }}</p>
                             @endif
                         </div>
-                        <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
-                            <span><i class="fas fa-box mr-1"></i>Stok: {{ $produk->stok }}</span>
-                            <span><i class="fas fa-shopping-cart mr-1"></i>{{ $produk->sold_count ?? 0 }} terjual</span>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mb-4 mt-auto">
+                            <span>Stok: {{ $produk->stok }}</span>
+                            <span>{{ $produk->sold_count ?? 0 }} terjual</span>
                         </div>
                         <a href="{{ route('pelanggan.produk.show', $produk->slug) }}"
-                            class="block w-full bg-primary-600 text-white text-center py-2 rounded-lg font-semibold hover:bg-primary-700 transition-all">
+                            class="block w-full bg-primary-600 text-white text-center py-2 rounded-lg font-semibold text-sm hover:bg-primary-700 transition-colors">
                             Lihat Detail
                         </a>
                     </div>
@@ -261,56 +265,59 @@
     </div>
 
     <!-- Bagian Produk Terbaru -->
-    <div class="mb-8">
-        <div class="flex items-center justify-between mb-6">
-            <div>
-                <h2 class="text-2xl font-bold text-gray-900 mb-1">Produk Terbaru</h2>
-                <p class="text-gray-600">Produk bearing terbaru di katalog kami</p>
+    <div class="mb-8 bg-white rounded-xl border border-gray-200 p-6">
+        <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">
+            <div class="flex items-center gap-3">
+                <span class="block w-1 h-8 bg-primary-600 rounded-full"></span>
+                <div>
+                    <h2 class="text-xl font-bold text-gray-900">Produk Terbaru</h2>
+                    <p class="text-gray-500 text-sm">Produk bearing terbaru di katalog kami</p>
+                </div>
             </div>
             <a href="{{ route('pelanggan.produk.index', ['sort' => 'latest']) }}"
-                class="text-primary-600 hover:text-primary-700 font-semibold flex items-center">
-                Lihat Semua <i class="fas fa-arrow-right ml-2"></i>
+                class="text-primary-600 font-medium text-sm flex items-center">
+                Lihat Semua <i class="fas fa-arrow-right ml-2 text-xs"></i>
             </a>
         </div>
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
             @forelse($produkTerbaru as $produk)
-                <div class="bg-white rounded-xl shadow-md hover:shadow-xl transition-all overflow-hidden group">
-                    <div class="relative overflow-hidden">
+                <div class="bg-gray-50 rounded-lg border border-gray-200 hover:border-primary-300 transition-colors overflow-hidden flex flex-col">
+                    <div class="relative">
                         @if($produk->images->first())
-                            <img src="{{ asset('storage/' . $produk->images->first()->image_path) }}" 
-                                 alt="{{ $produk->nama }}"
-                                 class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300">
+                            <img src="{{ asset('storage/' . $produk->images->first()->image_path) }}"
+                                alt="{{ $produk->nama }}"
+                                class="w-full aspect-square object-cover bg-white">
                         @else
-                            <div class="w-full h-48 bg-gray-200 flex items-center justify-center group-hover:bg-gray-300 transition-all">
-                                <i class="fas fa-image text-gray-400 text-4xl"></i>
+                            <div class="w-full aspect-square bg-white flex items-center justify-center">
+                                <i class="fas fa-image text-gray-300 text-4xl"></i>
                             </div>
                         @endif
-                        <div class="absolute top-2 left-2 bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
-                            <i class="fas fa-star mr-1"></i>Baru
+                        <div class="absolute top-2 left-2 bg-white border border-gray-200 text-gray-700 text-xs px-2 py-0.5 rounded font-medium">
+                            Baru
                         </div>
                         @if($produk->harga_diskon)
-                            <div class="absolute top-2 right-2 bg-red-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
+                            <div class="absolute top-2 right-2 bg-primary-600 text-white text-xs px-2 py-0.5 rounded font-semibold">
                                 -{{ round((($produk->harga - $produk->harga_diskon) / $produk->harga) * 100) }}%
                             </div>
                         @endif
                     </div>
-                    <div class="p-4">
-                        <p class="text-xs text-gray-500 mb-1">{{ $produk->merk->nama ?? '-' }}</p>
-                        <h3 class="font-bold text-gray-900 mb-2 line-clamp-2 min-h-12">{{ $produk->nama }}</h3>
-                        <div class="flex items-center gap-2 mb-3">
+                    <div class="p-4 flex flex-col flex-1">
+                        <p class="text-xs text-gray-400 mb-1 uppercase tracking-wide">{{ $produk->merk->nama ?? '-' }}</p>
+                        <h3 class="font-semibold text-gray-900 mb-3 line-clamp-2 min-h-12 leading-snug">{{ $produk->nama }}</h3>
+                        <div class="mb-3">
                             @if($produk->harga_diskon)
-                                <span class="text-lg font-bold text-primary-600">Rp {{ number_format($produk->harga_diskon, 0, ',', '.') }}</span>
-                                <span class="text-sm text-gray-400 line-through">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
+                                <p class="text-lg font-bold text-primary-600 leading-none">Rp {{ number_format($produk->harga_diskon, 0, ',', '.') }}</p>
+                                <p class="text-xs text-gray-400 line-through mt-0.5">Rp {{ number_format($produk->harga, 0, ',', '.') }}</p>
                             @else
-                                <span class="text-lg font-bold text-primary-600">Rp {{ number_format($produk->harga, 0, ',', '.') }}</span>
+                                <p class="text-lg font-bold text-primary-600 leading-none">Rp {{ number_format($produk->harga, 0, ',', '.') }}</p>
                             @endif
                         </div>
-                        <div class="flex items-center justify-between text-xs text-gray-500 mb-3">
-                            <span><i class="fas fa-box mr-1"></i>Stok: {{ $produk->stok }}</span>
-                            <span class="text-green-600"><i class="fas fa-check-circle mr-1"></i>Tersedia</span>
+                        <div class="flex items-center justify-between text-xs text-gray-500 mb-4 mt-auto">
+                            <span>Stok: {{ $produk->stok }}</span>
+                            <span class="text-primary-600">Tersedia</span>
                         </div>
                         <a href="{{ route('pelanggan.produk.show', $produk->slug) }}"
-                            class="block w-full bg-primary-600 text-white text-center py-2 rounded-lg font-semibold hover:bg-primary-700 transition-all">
+                            class="block w-full bg-primary-600 text-white text-center py-2 rounded-lg font-semibold text-sm hover:bg-primary-700 transition-colors">
                             Lihat Detail
                         </a>
                     </div>

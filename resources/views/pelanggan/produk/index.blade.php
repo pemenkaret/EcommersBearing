@@ -189,17 +189,17 @@
             @if ($produks->count() > 0)
                 <div class="grid md:grid-cols-2 xl:grid-cols-3 gap-6 mb-6">
                     @foreach ($produks as $produk)
-                        <div class="bg-white rounded-xl shadow-md hover:shadow-2xl transition-all overflow-hidden group">
-                            <div class="relative overflow-hidden bg-gray-100">
+                        <div class="bg-white rounded-xl border border-gray-200 hover:border-primary-300 transition-colors overflow-hidden flex flex-col">
+                            <div class="relative bg-gray-100">
                                 @if ($produk->images->first())
                                     <img src="{{ asset('storage/' . $produk->images->first()->image_path) }}" alt="{{ $produk->nama }}"
-                                        class="w-full h-64 object-cover group-hover:scale-110 transition-transform duration-300">
+                                        class="w-full aspect-square object-cover">
                                 @else
-                                    <div class="w-full h-64 bg-gray-200 flex items-center justify-center">
+                                    <div class="w-full aspect-square bg-gray-200 flex items-center justify-center">
                                         <i class="fas fa-image text-gray-400 text-4xl"></i>
                                     </div>
                                 @endif
-                                
+
                                 @if ($produk->is_featured)
                                     <div class="absolute top-3 left-3">
                                         <span class="bg-primary-600 text-white text-xs font-semibold px-3 py-1 rounded-full">
@@ -210,59 +210,53 @@
 
                                 @if ($produk->harga_diskon)
                                     <div class="absolute top-3 right-3">
-                                        <span class="bg-red-500 text-white text-xs font-bold px-2 py-1 rounded">
+                                        <span class="bg-primary-600 text-white text-xs font-bold px-2 py-1 rounded">
                                             -{{ round((($produk->harga - $produk->harga_diskon) / $produk->harga) * 100) }}%
                                         </span>
                                     </div>
                                 @endif
-
-                                <div class="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-10 transition-all flex items-center justify-center opacity-0 group-hover:opacity-100">
-                                    <a href="{{ route('pelanggan.produk.show', $produk->slug) }}"
-                                        class="bg-white text-primary-600 px-4 py-2 rounded-lg font-semibold shadow-lg transform translate-y-4 group-hover:translate-y-0 transition-all">
-                                        <i class="fas fa-eye mr-2"></i>Lihat Detail
-                                    </a>
-                                </div>
                             </div>
-                            <div class="p-5">
+                            <div class="p-5 flex flex-col flex-1">
                                 <div class="flex items-center justify-between mb-2">
-                                    <span class="text-xs text-gray-500 font-medium">{{ $produk->merk->nama ?? '-' }}</span>
-                                    <span class="text-xs {{ $produk->stok > $produk->min_stok ? 'text-green-600' : 'text-orange-600' }} font-medium">
-                                        <i class="fas fa-box mr-1"></i>Stok: {{ $produk->stok }}
+                                    <span class="text-xs text-gray-500 font-medium uppercase tracking-wide">{{ $produk->merk->nama ?? '-' }}</span>
+                                    <span class="text-xs {{ $produk->stok > $produk->min_stok ? 'text-primary-600' : 'text-gray-500' }} font-medium">
+                                        Stok: {{ $produk->stok }}
                                     </span>
                                 </div>
-                                <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2 h-12">{{ $produk->nama }}</h3>
-                                <div class="flex items-center mb-3">
-                                    <span class="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                                <h3 class="font-semibold text-gray-900 mb-2 line-clamp-2 min-h-12 leading-snug">{{ $produk->nama }}</h3>
+                                <div class="flex items-center gap-2 mb-3 text-xs">
+                                    <span class="text-gray-500 bg-gray-100 px-2 py-1 rounded">
                                         {{ $produk->kategori->nama ?? '-' }}
                                     </span>
-                                    <span class="text-xs text-gray-500 ml-2">
-                                        {{ $produk->sold_count }} terjual
-                                    </span>
+                                    <span class="text-gray-500">{{ $produk->sold_count }} terjual</span>
                                 </div>
                                 <div class="mb-4">
                                     @if ($produk->harga_diskon)
-                                        <div class="text-sm text-gray-400 line-through">Rp {{ number_format($produk->harga, 0, ',', '.') }}</div>
-                                        <div class="text-xl font-bold text-primary-600">Rp {{ number_format($produk->harga_diskon, 0, ',', '.') }}</div>
+                                        <div class="text-xs text-gray-400 line-through">Rp {{ number_format($produk->harga, 0, ',', '.') }}</div>
+                                        <div class="text-xl font-bold text-primary-600 leading-tight">Rp {{ number_format($produk->harga_diskon, 0, ',', '.') }}</div>
                                     @else
-                                        <div class="text-xl font-bold text-primary-600">Rp {{ number_format($produk->harga, 0, ',', '.') }}</div>
+                                        <div class="text-xl font-bold text-primary-600 leading-tight">Rp {{ number_format($produk->harga, 0, ',', '.') }}</div>
                                     @endif
                                 </div>
-                                @auth
-                                    <form action="{{ route('pelanggan.keranjang.store') }}" method="POST">
-                                        @csrf
-                                        <input type="hidden" name="produk_id" value="{{ $produk->id }}">
-                                        <input type="hidden" name="quantity" value="1">
-                                        <button type="submit"
-                                            class="w-full cursor-pointer bg-primary-600 text-white py-2.5 rounded-lg font-semibold hover:bg-primary-700 transition-all flex items-center justify-center">
-                                            <i class="fas fa-shopping-cart mr-2"></i>Tambah ke Keranjang
-                                        </button>
-                                    </form>
-                                @else
-                                    <a href="{{ route('login') }}"
-                                        class="w-full bg-primary-600 text-white py-2.5 rounded-lg font-semibold hover:bg-primary-700 transition-all flex items-center justify-center">
-                                        <i class="fas fa-sign-in-alt mr-2"></i>Login untuk Beli
-                                    </a>
-                                @endauth
+                                {{-- Tombol selalu di paling bawah card agar align rata antar produk --}}
+                                <div class="mt-auto">
+                                    @auth
+                                        <form action="{{ route('pelanggan.keranjang.store') }}" method="POST">
+                                            @csrf
+                                            <input type="hidden" name="produk_id" value="{{ $produk->id }}">
+                                            <input type="hidden" name="quantity" value="1">
+                                            <button type="submit"
+                                                class="w-full cursor-pointer bg-primary-600 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-primary-700 transition-colors flex items-center justify-center">
+                                                <i class="fas fa-shopping-cart mr-2"></i>Tambah ke Keranjang
+                                            </button>
+                                        </form>
+                                    @else
+                                        <a href="{{ route('login') }}"
+                                            class="w-full bg-primary-600 text-white py-2.5 rounded-lg font-semibold text-sm hover:bg-primary-700 transition-colors flex items-center justify-center">
+                                            <i class="fas fa-sign-in-alt mr-2"></i>Login untuk Beli
+                                        </a>
+                                    @endauth
+                                </div>
                             </div>
                         </div>
                     @endforeach
