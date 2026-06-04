@@ -17,6 +17,7 @@ class UserSeeder extends Seeder
           $admin = new User([
                'name' => 'Admin',
                'email' => 'admin@bearing.com',
+               'telepon' => '081234567890',
                'password' => Hash::make('password'),
                'email_verified_at' => now(),
                'is_active' => true,
@@ -28,6 +29,7 @@ class UserSeeder extends Seeder
           $owner = new User([
                'name' => 'Owner',
                'email' => 'owner@bearing.com',
+               'telepon' => '081234567890',
                'password' => Hash::make('password'),
                'email_verified_at' => now(),
                'is_active' => true,

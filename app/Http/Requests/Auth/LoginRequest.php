@@ -29,6 +29,16 @@ class LoginRequest extends FormRequest
     }
 
     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'remember' => $this->boolean('remember'),
+        ]);
+    }
+
+    /**
      * Get custom messages for validator errors.
      *
      * @return array<string, string>

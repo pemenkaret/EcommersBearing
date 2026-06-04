@@ -15,6 +15,29 @@
         integrity="sha512-Avb2QiuDEEvB4bZJYdft2mNjVShBftLdPG8FJ0V7irTLQ8Uo0qcPxh4Plq7G5tGm0rU+1SPhVotteLpBERwTkw=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
 
+    <!-- Custom CSS: Hide Browser Default Password Icons -->
+    <style>
+        /* Chrome, Safari, Edge */
+        input[type="password"]::-ms-reveal,
+        input[type="password"]::-ms-clear {
+            display: none !important;
+        }
+
+        /* Firefox */
+        input[type="password"]::-moz-reveal {
+            display: none !important;
+        }
+
+        /* Chrome/Safari */
+        input[type="password"]::-webkit-contacts-auto-fill-button {
+            display: none !important;
+        }
+
+        input[type="password"]::-webkit-credentials-auto-fill-button {
+            display: none !important;
+        }
+    </style>
+
     <!-- Skrip -->
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -66,7 +89,8 @@
                         </div>
                         <div>
                             <h3 class="font-semibold text-lg mb-1">Produk Original</h3>
-                            <p class="text-primary-100 text-sm">100% produk bearing original dari brand ternama dunia</p>
+                            <p class="text-primary-100 text-sm">100% produk bearing original dari brand ternama dunia
+                            </p>
                         </div>
                     </div>
 
@@ -88,7 +112,8 @@
                         </div>
                         <div>
                             <h3 class="font-semibold text-lg mb-1">Harga Kompetitif</h3>
-                            <p class="text-primary-100 text-sm">Dapatkan harga terbaik untuk bearing berkualitas tinggi</p>
+                            <p class="text-primary-100 text-sm">Dapatkan harga terbaik untuk bearing berkualitas tinggi
+                            </p>
                         </div>
                     </div>
                 </div>
@@ -168,7 +193,8 @@
                             <label for="email" class="block text-sm font-medium text-gray-700 mb-2">
                                 <i class="fas fa-envelope mr-2 text-gray-400"></i>Email
                             </label>
-                            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
+                            <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus
+                                autocomplete="username"
                                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
                                 placeholder="contoh@email.com">
                         </div>
@@ -181,7 +207,7 @@
                             <div class="relative">
                                 <input id="password" type="password" name="password" required
                                     autocomplete="current-password"
-                                    class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                    class="w-full px-4 py-3 pr-10 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all [&::-ms-reveal]:hidden [&::-ms-clear]:hidden"
                                     placeholder="Masukkan password Anda">
                                 <button type="button" onclick="togglePassword()"
                                     class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
@@ -254,6 +280,25 @@
             toggleIcon.classList.add('fa-eye');
         }
     }
+
+    // Prefill email from localStorage if exists
+    document.addEventListener('DOMContentLoaded', function () {
+        const savedEmail = localStorage.getItem('remembered_email');
+        if (savedEmail && !document.getElementById('email').value) {
+            document.getElementById('email').value = savedEmail;
+        }
+
+        // Save email to localStorage when remember is checked and form is submitted
+        document.querySelector('form').addEventListener('submit', function () {
+            const rememberChecked = document.querySelector('input[name="remember"]').checked;
+            const emailValue = document.getElementById('email').value;
+            if (rememberChecked && emailValue) {
+                localStorage.setItem('remembered_email', emailValue);
+            } else {
+                localStorage.removeItem('remembered_email');
+            }
+        });
+    });
 </script>
 
 </html>

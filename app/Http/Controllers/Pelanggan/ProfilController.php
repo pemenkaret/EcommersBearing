@@ -13,8 +13,9 @@ class ProfilController extends Controller
     {
         $user = auth()->user();
         $alamats = $user->alamats;
+        $rememberTokens = $user->rememberMeTokens()->latest()->get();
         
-        return view('pelanggan.profil.index', compact('user', 'alamats'));
+        return view('pelanggan.profil.index', compact('user', 'alamats', 'rememberTokens'));
     }
 
     public function updatePribadi(Request $request)
@@ -85,5 +86,32 @@ class ProfilController extends Controller
         ]);
         
         return back()->with('success', 'Pengaturan notifikasi berhasil diupdate.');
+    }
+
+    public function deleteRememberToken(Request $request, $id)
+    {
+        $user = auth()->user();
+        $token = $user->rememberMeTokens()->findOrFail($id);
+        $token->delete();
+
+        // Hapus cookie jika ini adalah token yang sedang digunakan
+        $cookieName = config('auth.remember_me.cookie_name');
+        $response = back()->with('success', 'Perangkat dihapus dari daftar ingat saya.');
+        
+        if ($request->cookie($cookieName) === $token->token) {
+            $response = $response->withCookie(cookie()->forget($cookieName));
+        }
+
+        return $response;
+    }
+
+    public function deleteAllRememberTokens(Request $request)
+    {
+        $user = auth()->user();
+        $user->rememberMeTokens()->delete();
+
+        $cookieName = config('auth.remember_me.cookie_name');
+        return back()->with('success', 'Semua perangkat dihapus dari daftar ingat saya.')
+            ->withCookie(cookie()->forget($cookieName));
     }
 }
