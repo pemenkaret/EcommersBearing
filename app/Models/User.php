@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str;
 
 /**
  * Model User
@@ -36,6 +37,7 @@ class User extends Authenticatable
         'notifikasi_order',
         'notifikasi_promo',
         'last_login_at',
+        'email_verified_at',
     ];
 
     /**
@@ -161,5 +163,30 @@ class User extends Authenticatable
     public function updateLastLogin(): void
     {
         $this->update(['last_login_at' => now()]);
+    }
+
+    /**
+     * Relationship to remember me tokens
+     */
+    public function rememberMeTokens(): HasMany
+    {
+        return $this->hasMany(RememberMeToken::class);
+    }
+
+    /**
+     * Create new remember me token
+     */
+    public function createRememberMeToken(?string $deviceName = null, ?string $userAgent = null, ?string $ipAddress = null): RememberMeToken
+    {
+        $token = Str::random(64);
+        $lifetime = (int) config('auth.remember_me.lifetime', 30); // days
+
+        return $this->rememberMeTokens()->create([
+            'token' => $token,
+            'device_name' => $deviceName,
+            'user_agent' => $userAgent,
+            'ip_address' => $ipAddress,
+            'expires_at' => now()->addDays($lifetime),
+        ]);
     }
 }

@@ -112,4 +112,22 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Remember Me Configuration
+    |--------------------------------------------------------------------------
+    |
+    | Here you may define the lifetime of the remember me token in days,
+    | the cookie name, and other security settings.
+    |
+    */
+
+    'remember_me' => [
+        'lifetime' => env('AUTH_REMEMBER_ME_LIFETIME', 30), // days
+        'cookie_name' => env('AUTH_REMEMBER_ME_COOKIE', 'remember_me_token'),
+        'secure' => env('AUTH_REMEMBER_ME_SECURE', true),
+        'http_only' => env('AUTH_REMEMBER_ME_HTTP_ONLY', true),
+        'same_site' => env('AUTH_REMEMBER_ME_SAME_SITE', 'strict'),
+    ],
+
 ];

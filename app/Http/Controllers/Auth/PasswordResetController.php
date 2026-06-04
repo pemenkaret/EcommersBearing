@@ -19,9 +19,6 @@ class PasswordResetController extends Controller
         return view('auth.forgot-password');
     }
 
-    /**
-     * Kirim reset link
-     */
     public function sendResetLink(Request $request)
     {
         $request->validate(['email' => 'required|email']);
@@ -30,9 +27,23 @@ class PasswordResetController extends Controller
             $request->only('email')
         );
 
-        return $status === Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
-                    : back()->withErrors(['email' => __($status)]);
+        if ($status === Password::RESET_LINK_SENT) {
+            return back()->with('status', __($status));
+        }
+
+        if ($status === Password::RESET_THROTTLED) {
+            $token = \Illuminate\Support\Facades\DB::table('password_reset_tokens')
+                ->where('email', $request->email)
+                ->first();
+            $remaining = 60;
+            if ($token) {
+                $throttle = config('auth.passwords.users.throttle', 60);
+                $remaining = max(0, strtotime($token->created_at) + $throttle - time());
+            }
+            return back()->withErrors(['email' => __($status)])->with('throttle_seconds', $remaining);
+        }
+
+        return back()->withErrors(['email' => __($status)]);
     }
 
     /**

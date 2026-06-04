@@ -39,7 +39,7 @@ class AuthController extends Controller
 
         $credentials = $request->only('email', 'password');
 
-        if (Auth::attempt($credentials, $request->filled('remember'))) {
+        if (Auth::attempt($credentials)) {
             $user = auth()->user();
 
             // Tolak user nonaktif
@@ -59,16 +59,42 @@ class AuthController extends Controller
             // Update last login
             $user->updateLastLogin();
 
+            // Handle remember me
+            if ($request->remember) {
+                $deviceName = $this->getDeviceName($request->userAgent());
+                $rememberToken = $user->createRememberMeToken(
+                    $deviceName,
+                    $request->userAgent(),
+                    $request->ip()
+                );
+
+                $cookieName = config('auth.remember_me.cookie_name');
+                $cookieLifetime = (int) config('auth.remember_me.lifetime') * 24 * 60; // convert days to minutes
+                $secure = config('auth.remember_me.secure');
+                $httpOnly = config('auth.remember_me.http_only');
+                $sameSite = config('auth.remember_me.same_site');
+
+                $cookie = cookie(
+                    $cookieName,
+                    $rememberToken->token,
+                    $cookieLifetime,
+                    '/',
+                    null,
+                    $secure,
+                    $httpOnly,
+                    false,
+                    $sameSite
+                );
+            }
+
             // Redirect berdasarkan role
-            if ($user->isAdmin()) {
-                return redirect()->intended('/admin/dashboard');
+            $redirectUrl = $this->getRedirectUrlForUser($user);
+
+            if (isset($cookie)) {
+                return redirect()->intended($redirectUrl)->cookie($cookie);
             }
 
-            if ($user->isOwner()) {
-                return redirect()->intended(route('owner.laporan-pendapatan.index'));
-            }
-
-            return redirect()->intended('/');
+            return redirect()->intended($redirectUrl);
         }
 
         RateLimiter::hit($rateKey, 60);
@@ -76,6 +102,41 @@ class AuthController extends Controller
         return back()->withErrors([
             'email' => 'Email atau password salah.',
         ])->onlyInput('email');
+    }
+
+    /**
+     * Get device name from user agent
+     */
+    private function getDeviceName(?string $userAgent): string
+    {
+        if (Str::contains($userAgent, 'iPhone') || Str::contains($userAgent, 'iPad') || Str::contains($userAgent, 'iPod')) {
+            return 'iOS Device';
+        } elseif (Str::contains($userAgent, 'Android')) {
+            return 'Android Device';
+        } elseif (Str::contains($userAgent, 'Windows')) {
+            return 'Windows PC';
+        } elseif (Str::contains($userAgent, 'Macintosh')) {
+            return 'Mac';
+        } elseif (Str::contains($userAgent, 'Linux')) {
+            return 'Linux PC';
+        }
+        return 'Unknown Device';
+    }
+
+    /**
+     * Get redirect URL for user based on role
+     */
+    private function getRedirectUrlForUser(User $user): string
+    {
+        if ($user->isAdmin()) {
+            return '/admin/dashboard';
+        }
+
+        if ($user->isOwner()) {
+            return route('owner.laporan-pendapatan.index');
+        }
+
+        return '/';
     }
 
     /**
@@ -118,11 +179,25 @@ class AuthController extends Controller
      */
     public function logout(Request $request)
     {
+        $user = auth()->user();
+
         Auth::logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect('/')->with('success', 'Anda telah logout.');
+        // Delete remember me token from cookie and database
+        $cookieName = config('auth.remember_me.cookie_name');
+        $token = $request->cookie($cookieName);
+
+        if ($user && $token) {
+            $user->rememberMeTokens()->where('token', $token)->delete();
+        }
+
+        // Clear localStorage remembered email
+        $response = redirect('/')->with('success', 'Anda telah logout.');
+        $response->withCookie(cookie()->forget($cookieName));
+
+        return $response;
     }
 }

@@ -127,6 +127,8 @@ Route::prefix('pelanggan')->name('pelanggan.')->middleware(['auth', 'role:pelang
     Route::put('/profil/password', [Pelanggan\ProfilController::class, 'updatePassword'])->name('profil.update-password');
     Route::post('/profil/avatar', [Pelanggan\ProfilController::class, 'updateAvatar'])->name('profil.update-avatar');
     Route::put('/profil/notifikasi', [Pelanggan\ProfilController::class, 'updateNotifikasi'])->name('profil.update-notifikasi');
+    Route::delete('/profil/remember/{id}', [Pelanggan\ProfilController::class, 'deleteRememberToken'])->name('profil.delete-remember');
+    Route::delete('/profil/remember', [Pelanggan\ProfilController::class, 'deleteAllRememberTokens'])->name('profil.delete-all-remember');
 
     /*
     |----------------------------------------------------------------------
@@ -214,6 +216,8 @@ Route::prefix('admin')->name('admin.')->middleware(['auth', 'role:admin'])->grou
     */
     Route::get('/profil', [Admin\ProfilController::class, 'index'])->name('profil.index');
     Route::put('/profil', [Admin\ProfilController::class, 'update'])->name('profil.update');
+    Route::delete('/profil/remember/{id}', [Admin\ProfilController::class, 'deleteRememberToken'])->name('profil.delete-remember');
+    Route::delete('/profil/remember', [Admin\ProfilController::class, 'deleteAllRememberTokens'])->name('profil.delete-all-remember');
 
     /*
     |----------------------------------------------------------------------

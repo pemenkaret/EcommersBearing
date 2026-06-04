@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'Bearing Shop') }} - Lupa Password</title>
+    <title>{{ config('app.name', 'Bearing Shop') }} - Reset Password</title>
 
     <!-- Font -->
     <link rel="preconnect" href="https://fonts.bunny.net">
@@ -66,8 +66,7 @@
                         </div>
                         <div>
                             <h3 class="font-semibold text-lg mb-1">Produk Original</h3>
-                            <p class="text-primary-100 text-sm">100% produk bearing original dari brand ternama dunia
-                            </p>
+                            <p class="text-primary-100 text-sm">100% produk bearing original dari brand ternama dunia</p>
                         </div>
                     </div>
 
@@ -89,8 +88,7 @@
                         </div>
                         <div>
                             <h3 class="font-semibold text-lg mb-1">Harga Kompetitif</h3>
-                            <p class="text-primary-100 text-sm">Dapatkan harga terbaik untuk bearing berkualitas tinggi
-                            </p>
+                            <p class="text-primary-100 text-sm">Dapatkan harga terbaik untuk bearing berkualitas tinggi</p>
                         </div>
                     </div>
                 </div>
@@ -133,82 +131,30 @@
                 <div class="bg-white rounded-2xl shadow-xl p-8 lg:p-10">
                     <!-- Header -->
                     <div class="mb-8 text-center">
-                        <div
-                            class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-key text-primary-600 text-2xl"></i>
+                        <div class="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-lock text-primary-600 text-2xl"></i>
                         </div>
-                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Lupa Password?</h2>
+                        <h2 class="text-3xl font-bold text-gray-900 mb-2">Reset Password</h2>
                         <p class="text-gray-600 text-sm">
-                            Tidak masalah! Masukkan email Anda dan kami akan mengirimkan link untuk reset password.
+                            Masukkan password baru untuk akun Anda.
                         </p>
                     </div>
 
-                    <!-- Status Pesan -->
-                    @if (session('status'))
-                        <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-800 text-sm">
-                            <i class="fas fa-check-circle mr-2"></i>{{ session('status') }}
-                        </div>
-                    @endif
-
                     <!-- Error Pesan -->
                     @if ($errors->any())
-                        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm space-y-2">
+                        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-800 text-sm">
                             @foreach ($errors->all() as $error)
-                                @if (session('throttle_seconds') && (str_contains(strtolower($error), 'tunggu') || str_contains(strtolower($error), 'wait') || str_contains(strtolower($error), 'throttled')))
-                                    <div id="throttle-alert" class="flex items-center">
-                                        <i class="fas fa-exclamation-circle mr-2 shrink-0"></i>
-                                        <span>Silakan tunggu <span id="countdown" class="font-bold underline">{{ session('throttle_seconds') }}</span> detik sebelum mencoba kembali.</span>
-                                    </div>
-                                @else
-                                    <div class="flex items-center">
-                                        <i class="fas fa-exclamation-circle mr-2 shrink-0"></i>
-                                        <span>{{ $error }}</span>
-                                    </div>
-                                @endif
+                                <div><i class="fas fa-exclamation-circle mr-2"></i>{{ $error }}</div>
                             @endforeach
                         </div>
                     @endif
 
-                    @if (session('throttle_seconds'))
-                        <script>
-                            document.addEventListener('DOMContentLoaded', function () {
-                                let remaining = parseInt('{{ session('throttle_seconds') }}', 10);
-                                const countdownEl = document.getElementById('countdown');
-                                const alertEl = document.getElementById('throttle-alert');
-                                const submitBtn = document.querySelector('button[type="submit"]');
-                                
-                                if (remaining > 0 && countdownEl) {
-                                    if (submitBtn) {
-                                        submitBtn.disabled = true;
-                                        submitBtn.classList.add('opacity-60', 'cursor-not-allowed');
-                                        const originalBtnHtml = submitBtn.innerHTML;
-                                        submitBtn.innerHTML = `<i class="fas fa-spinner fa-spin mr-2"></i>Tunggu Cooldown...`;
-                                        
-                                        const checkTime = setInterval(function () {
-                                            remaining--;
-                                            if (remaining <= 0) {
-                                                clearInterval(checkTime);
-                                                countdownEl.textContent = '0';
-                                                submitBtn.disabled = false;
-                                                submitBtn.classList.remove('opacity-60', 'cursor-not-allowed');
-                                                submitBtn.innerHTML = originalBtnHtml;
-                                                if (alertEl) {
-                                                    alertEl.classList.add('opacity-0', 'transition-opacity', 'duration-500');
-                                                    setTimeout(() => alertEl.remove(), 500);
-                                                }
-                                            } else {
-                                                countdownEl.textContent = remaining;
-                                            }
-                                        }, 1000);
-                                    }
-                                }
-                            });
-                        </script>
-                    @endif
-
-                    <!-- Form Lupa Password -->
-                    <form method="POST" action="{{ route('password.email') }}" class="space-y-6">
+                    <!-- Form Reset Password -->
+                    <form method="POST" action="{{ route('password.update') }}" class="space-y-6">
                         @csrf
+
+                        <!-- Token (Hidden) -->
+                        <input type="hidden" name="token" value="{{ $token }}">
 
                         <!-- Alamat Email -->
                         <div>
@@ -216,45 +162,50 @@
                                 <i class="fas fa-envelope mr-2 text-gray-400"></i>Alamat Email
                             </label>
                             <input id="email" type="email" name="email" required autofocus
+                                value="{{ old('email', $email) }}"
                                 class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                                placeholder="Masukkan email terdaftar Anda">
-                            <p class="mt-2 text-xs text-gray-500">
-                                <i class="fas fa-info-circle mr-1"></i>Kami akan mengirimkan link reset password ke
-                                email ini
-                            </p>
+                                placeholder="Masukkan email Anda">
+                        </div>
+
+                        <!-- Password Baru -->
+                        <div>
+                            <label for="password" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-lock mr-2 text-gray-400"></i>Password Baru
+                            </label>
+                            <div class="relative">
+                                <input id="password" type="password" name="password" required autocomplete="new-password"
+                                    class="w-full px-4 py-3 pr-10 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                    placeholder="Masukkan password baru">
+                                <button type="button" onclick="togglePassword('password', 'toggleIcon1')"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-eye" id="toggleIcon1"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Konfirmasi Password -->
+                        <div>
+                            <label for="password_confirmation" class="block text-sm font-medium text-gray-700 mb-2">
+                                <i class="fas fa-lock mr-2 text-gray-400"></i>Konfirmasi Password Baru
+                            </label>
+                            <div class="relative">
+                                <input id="password_confirmation" type="password" name="password_confirmation" required
+                                    autocomplete="new-password"
+                                    class="w-full px-4 py-3 pr-10 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
+                                    placeholder="Masukkan ulang password baru">
+                                <button type="button" onclick="togglePassword('password_confirmation', 'toggleIcon2')"
+                                    class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600">
+                                    <i class="fas fa-eye" id="toggleIcon2"></i>
+                                </button>
+                            </div>
                         </div>
 
                         <!-- Tombol Submit -->
                         <button type="submit"
                             class="w-full bg-primary-600 text-white py-3 rounded-lg font-medium hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                            <i class="fas fa-paper-plane mr-2"></i>Kirim Link Reset Password
+                            <i class="fas fa-sync-alt mr-2"></i>Reset Password
                         </button>
                     </form>
-
-                    <!-- Instruksi -->
-                    <div class="mt-8 p-4 bg-primary-50 border border-primary-100 rounded-lg">
-                        <h4 class="text-sm font-semibold text-primary-900 mb-2 flex items-center">
-                            <i class="fas fa-lightbulb mr-2"></i>Petunjuk:
-                        </h4>
-                        <ul class="text-xs text-primary-800 space-y-1.5 ml-6">
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-primary-600 mr-2 mt-0.5"></i>
-                                <span>Masukkan email yang terdaftar di akun Anda</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-primary-600 mr-2 mt-0.5"></i>
-                                <span>Cek inbox atau folder spam email Anda</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-primary-600 mr-2 mt-0.5"></i>
-                                <span>Klik link reset password yang dikirimkan</span>
-                            </li>
-                            <li class="flex items-start">
-                                <i class="fas fa-check text-primary-600 mr-2 mt-0.5"></i>
-                                <span>Buat password baru untuk akun Anda</span>
-                            </li>
-                        </ul>
-                    </div>
 
                     <!-- Pembatas -->
                     <div class="relative my-6">
@@ -272,14 +223,6 @@
                             class="inline-flex items-center text-sm text-primary-600 hover:text-primary-700 font-medium hover:underline">
                             <i class="fas fa-arrow-left mr-2"></i>Kembali ke halaman login
                         </a>
-
-                        <p class="text-xs text-gray-600">
-                            Belum punya akun?
-                            <a href="{{ route('register') }}"
-                                class="text-primary-600 hover:text-primary-700 font-medium hover:underline ml-1">
-                                Daftar sekarang
-                            </a>
-                        </p>
                     </div>
 
                     <!-- Bagian Bantuan -->
@@ -304,6 +247,23 @@
             </div>
         </div>
     </div>
+
+    <!-- Script untuk toggle password visibility -->
+    <script>
+        function togglePassword(inputId, iconId) {
+            const input = document.getElementById(inputId);
+            const icon = document.getElementById(iconId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
+    </script>
 </body>
 
 </html>

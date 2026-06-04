@@ -117,7 +117,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nama Lengkap <span class="text-red-500">*</span></label>
                             <input type="text" name="name" value="{{ old('name', $user->name) }}" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent @error('name') border-red-500 @enderror">
+                                class="w-full px-4 py-2 border {{ $errors->has('name') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                             @error('name')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -125,7 +125,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Email <span class="text-red-500">*</span></label>
                             <input type="email" name="email" value="{{ old('email', $user->email) }}" required
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent @error('email') border-red-500 @enderror">
+                                class="w-full px-4 py-2 border {{ $errors->has('email') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
                             @error('email')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -133,7 +133,7 @@
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
                             <input type="tel" name="telepon" value="{{ old('telepon', $user->telepon) }}"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent @error('telepon') border-red-500 @enderror"
+                                class="w-full px-4 py-2 border {{ $errors->has('telepon') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
                                 placeholder="08xx-xxxx-xxxx">
                             @error('telepon')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -155,7 +155,7 @@
                         @csrf
                         <div class="flex items-center space-x-4">
                             <input type="file" name="avatar" accept="image/jpeg,image/png,image/jpg" required
-                                class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('avatar') border-red-500 @enderror">
+                                class="flex-1 px-4 py-2 border {{ $errors->has('avatar') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
                             <button type="submit"
                                 class="px-4 py-2 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-all">
                                 <i class="fas fa-upload mr-2"></i>Upload
@@ -190,7 +190,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Label Alamat <span class="text-red-500">*</span></label>
                                 <input type="text" name="label" value="{{ old('label') }}" placeholder="Contoh: Rumah, Kantor" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('label') border-red-500 @enderror">
+                                    class="w-full px-4 py-2 border {{ $errors->has('label') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
                                 @error('label')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -198,7 +198,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Nama Penerima <span class="text-red-500">*</span></label>
                                 <input type="text" name="penerima" value="{{ old('penerima') }}" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('penerima') border-red-500 @enderror">
+                                    class="w-full px-4 py-2 border {{ $errors->has('penerima') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
                                 @error('penerima')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -206,7 +206,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Telepon <span class="text-red-500">*</span></label>
                                 <input type="tel" name="telepon" value="{{ old('telepon') }}" required placeholder="08xx-xxxx-xxxx"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('telepon') border-red-500 @enderror">
+                                    class="w-full px-4 py-2 border {{ $errors->has('telepon') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
                                 @error('telepon')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -214,7 +214,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi <span class="text-red-500">*</span></label>
                                 <select name="provinsi" id="provinsi-tambah" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('provinsi') border-red-500 @enderror">
+                                    class="w-full px-4 py-2 border {{ $errors->has('provinsi') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
                                     <option value="">Pilih Provinsi</option>
                                 </select>
                                 @error('provinsi')
@@ -224,7 +224,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Kota/Kabupaten <span class="text-red-500">*</span></label>
                                 <select name="kota" id="kota-tambah" required disabled
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('kota') border-red-500 @enderror">
+                                    class="w-full px-4 py-2 border {{ $errors->has('kota') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
                                     <option value="">Pilih Provinsi Terlebih Dahulu</option>
                                 </select>
                                 @error('kota')
@@ -234,7 +234,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Kecamatan <span class="text-red-500">*</span></label>
                                 <select name="kecamatan" id="kecamatan-tambah" required disabled
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('kecamatan') border-red-500 @enderror">
+                                    class="w-full px-4 py-2 border {{ $errors->has('kecamatan') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
                                     <option value="">Pilih Kota Terlebih Dahulu</option>
                                 </select>
                                 @error('kecamatan')
@@ -244,7 +244,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Kode Pos <span class="text-red-500">*</span></label>
                                 <input type="text" name="kode_pos" value="{{ old('kode_pos') }}" required placeholder="Contoh: 40132"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('kode_pos') border-red-500 @enderror">
+                                    class="w-full px-4 py-2 border {{ $errors->has('kode_pos') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
                                 @error('kode_pos')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -252,7 +252,7 @@
                             <div class="md:col-span-2">
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap <span class="text-red-500">*</span></label>
                                 <textarea name="alamat_lengkap" rows="3" required placeholder="Nama jalan, nomor rumah, RT/RW, dll"
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('alamat_lengkap') border-red-500 @enderror">{{ old('alamat_lengkap') }}</textarea>
+                                    class="w-full px-4 py-2 border {{ $errors->has('alamat_lengkap') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">{{ old('alamat_lengkap') }}</textarea>
                                 @error('alamat_lengkap')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -411,7 +411,7 @@
                 </h2>
 
                 <!-- Ubah Password -->
-                <div>
+                <div class="mb-8 pb-8 border-b border-gray-200">
                     <h3 class="text-lg font-bold text-gray-900 mb-4">Ubah Password</h3>
                     <form action="{{ route('pelanggan.profil.update-password') }}" method="POST">
                         @csrf
@@ -420,7 +420,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Password Lama <span class="text-red-500">*</span></label>
                                 <input type="password" name="current_password" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('current_password') border-red-500 @enderror">
+                                    class="w-full px-4 py-2 border {{ $errors->has('current_password') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
                                 @error('current_password')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -428,7 +428,7 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Password Baru <span class="text-red-500">*</span></label>
                                 <input type="password" name="password" required
-                                    class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 @error('password') border-red-500 @enderror"
+                                    class="w-full px-4 py-2 border {{ $errors->has('password') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500"
                                     placeholder="Minimal 8 karakter">
                                 @error('password')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
@@ -445,6 +445,55 @@
                             <i class="fas fa-key mr-2"></i>Ubah Password
                         </button>
                     </form>
+                </div>
+
+                <!-- Perangkat yang Diingat -->
+                <div>
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-bold text-gray-900">Perangkat yang Diingat</h3>
+                        @if($rememberTokens->count() > 0)
+                            <form action="{{ route('pelanggan.profil.delete-all-remember') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus semua perangkat?')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="px-3 py-1.5 bg-red-600 text-white text-xs rounded-lg hover:bg-red-700 transition-all">
+                                    <i class="fas fa-trash mr-1"></i>Hapus Semua
+                                </button>
+                            </form>
+                        @endif
+                    </div>
+
+                    @if($rememberTokens->count() > 0)
+                        <div class="space-y-3">
+                            @foreach($rememberTokens as $token)
+                                <div class="border border-gray-200 rounded-lg p-3">
+                                    <div class="flex items-start justify-between">
+                                        <div>
+                                            <div class="flex items-center">
+                                                <i class="fas fa-{{ (str_contains($token->device_name, 'iOS') || str_contains($token->device_name, 'Android')) ? 'mobile-alt' : 'desktop' }} text-primary-500 mr-2"></i>
+                                                <div>
+                                                    <p class="font-medium text-gray-900 text-sm">{{ $token->device_name ?? 'Perangkat Tidak Dikenal' }}</p>
+                                                    <p class="text-xs text-gray-500">{{ $token->ip_address }} • {{ $token->created_at->diffForHumans() }}</p>
+                                                    <p class="text-xs text-gray-400">Kadaluarsa: {{ $token->expires_at->translatedFormat('d M Y, H:i') }}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <form action="{{ route('pelanggan.profil.delete-remember', $token->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus perangkat ini?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="text-red-600 hover:text-red-700">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+                    @else
+                        <div class="text-center py-6 text-gray-500">
+                            <i class="fas fa-mobile-alt text-3xl mb-2"></i>
+                            <p class="text-sm">Tidak ada perangkat yang diingat</p>
+                        </div>
+                    @endif
                 </div>
             </div>
 
