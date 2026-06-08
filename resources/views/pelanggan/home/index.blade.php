@@ -173,16 +173,14 @@
                 <div class="flex gap-3" style="width: max-content;">
                     @foreach($merksPremium as $merk)
                         <a href="{{ route('pelanggan.produk.index', ['merk_id' => $merk->id]) }}"
-                            class="bg-transparent rounded-lg p-4 border border-gray-200 hover:border-primary-300 transition-colors text-center flex-shrink-0 w-28">
+                            class="bg-gray-50/50 rounded-lg p-4 border border-gray-200 hover:border-primary-300 transition-colors text-center flex-shrink-0 w-28 flex flex-col justify-center min-h-[88px]">
                             @if($merk->logo)
                                 <img src="{{ asset('storage/' . $merk->logo) }}" alt="{{ $merk->nama }}"
                                     class="h-8 object-contain bg-transparent mx-auto mb-2">
+                                <h3 class="font-semibold text-gray-900 text-xs line-clamp-1">{{ $merk->nama }}</h3>
                             @else
-                                <div class="h-8 flex items-center justify-center mb-2">
-                                    <span class="text-sm font-bold text-gray-700">{{ $merk->nama }}</span>
-                                </div>
+                                <span class="text-sm font-bold text-gray-700">{{ $merk->nama }}</span>
                             @endif
-                            <h3 class="font-semibold text-gray-900 text-xs line-clamp-1">{{ $merk->nama }}</h3>
                         </a>
                     @endforeach
                 </div>
@@ -192,16 +190,14 @@
             <div class="hidden md:grid md:grid-cols-3 lg:grid-cols-6 gap-3">
                 @foreach($merksPremium as $merk)
                     <a href="{{ route('pelanggan.produk.index', ['merk_id' => $merk->id]) }}"
-                        class="bg-transparent rounded-lg p-5 border border-gray-200 hover:border-primary-300 transition-colors text-center">
+                        class="bg-transparent rounded-lg p-5 border border-gray-200 hover:border-primary-300 transition-colors text-center flex flex-col justify-center min-h-[120px]">
                         @if($merk->logo)
                             <img src="{{ asset('storage/' . $merk->logo) }}" alt="{{ $merk->nama }}"
                                 class="h-12 object-contain bg-transparent mx-auto mb-3">
+                            <h3 class="font-semibold text-gray-900 text-sm">{{ $merk->nama }}</h3>
                         @else
-                            <div class="h-12 flex items-center justify-center mb-3">
-                                <span class="text-xl font-bold text-gray-700">{{ $merk->nama }}</span>
-                            </div>
+                            <span class="text-xl font-bold text-gray-700">{{ $merk->nama }}</span>
                         @endif
-                        <h3 class="font-semibold text-gray-900 text-sm">{{ $merk->nama }}</h3>
                     </a>
                 @endforeach
             </div>
