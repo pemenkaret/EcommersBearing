@@ -44,13 +44,12 @@
                 <!-- Avatar -->
                 <div class="relative bg-linear-to-br from-primary-700 to-primary-900 p-8 text-center rounded-t-xl overflow-hidden">
                     <div class="w-32 h-32 mx-auto mb-4 relative">
-                        @if ($user->avatar)
-                            <img src="{{ asset('storage/' . $user->avatar) }}" alt="Avatar"
-                                class="w-full h-full rounded-full border-4 border-white shadow-lg object-cover">
-                        @else
-                            <img src="https://ui-avatars.com/api/?name={{ urlencode($user->name) }}&size=128&background=3b82f6&color=fff"
-                                alt="Avatar" class="w-full h-full rounded-full border-4 border-white shadow-lg object-cover">
-                        @endif
+                        @php
+                            $initials = collect(explode(' ', $user->name))->map(fn($s) => strtoupper(substr($s, 0, 1)))->take(2)->join('');
+                        @endphp
+                        <div class="w-full h-full rounded-full border-4 border-white shadow-lg flex items-center justify-center bg-primary-500 text-white font-bold text-5xl">
+                            {{ $initials }}
+                        </div>
                     </div>
                     <h2 class="text-xl font-bold text-white mb-1">{{ $user->name }}</h2>
                     <p class="text-primary-100 text-sm">{{ $user->email }}</p>
@@ -134,7 +133,8 @@
                             <label class="block text-sm font-medium text-gray-700 mb-2">Nomor Telepon</label>
                             <input type="tel" name="telepon" value="{{ old('telepon', $user->telepon) }}"
                                 class="w-full px-4 py-2 border {{ $errors->has('telepon') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-                                placeholder="08xx-xxxx-xxxx">
+                                placeholder="08xx-xxxx-xxxx"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                             @error('telepon')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                             @enderror
@@ -148,25 +148,7 @@
                     </div>
                 </form>
 
-                <!-- Upload Avatar -->
-                <div class="mt-8 pt-8 border-t">
-                    <h3 class="text-lg font-bold text-gray-900 mb-4">Foto Profil</h3>
-                    <form action="{{ route('pelanggan.profil.update-avatar') }}" method="POST" enctype="multipart/form-data">
-                        @csrf
-                        <div class="flex items-center space-x-4">
-                            <input type="file" name="avatar" accept="image/jpeg,image/png,image/jpg" required
-                                class="flex-1 px-4 py-2 border {{ $errors->has('avatar') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
-                            <button type="submit"
-                                class="px-4 py-2 bg-gray-600 text-white rounded-lg font-semibold hover:bg-gray-700 transition-all">
-                                <i class="fas fa-upload mr-2"></i>Upload
-                            </button>
-                        </div>
-                        @error('avatar')
-                            <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
-                        @enderror
-                        <p class="text-gray-500 text-xs mt-2">Format: jpeg, png, jpg. Maksimal 2MB</p>
-                    </form>
-                </div>
+                <!-- Upload Avatar Dihapus karena menggunakan inisial nama -->
             </div>
 
             <!-- Section Alamat Pengiriman -->
@@ -206,7 +188,8 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Telepon <span class="text-red-500">*</span></label>
                                 <input type="tel" name="telepon" value="{{ old('telepon') }}" required placeholder="08xx-xxxx-xxxx"
-                                    class="w-full px-4 py-2 border {{ $errors->has('telepon') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
+                                    class="w-full px-4 py-2 border {{ $errors->has('telepon') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 @error('telepon')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -244,7 +227,8 @@
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 mb-2">Kode Pos <span class="text-red-500">*</span></label>
                                 <input type="text" name="kode_pos" value="{{ old('kode_pos') }}" required placeholder="Contoh: 40132"
-                                    class="w-full px-4 py-2 border {{ $errors->has('kode_pos') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500">
+                                    class="w-full px-4 py-2 border {{ $errors->has('kode_pos') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500"
+                                    oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 @error('kode_pos')
                                     <p class="text-red-500 text-xs mt-1">{{ $message }}</p>
                                 @enderror
@@ -354,7 +338,8 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Telepon <span class="text-red-500">*</span></label>
                                     <input type="tel" id="edit-telepon" name="telepon" required placeholder="08xx-xxxx-xxxx"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 </div>
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Provinsi <span class="text-red-500">*</span></label>
@@ -380,7 +365,8 @@
                                 <div>
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Kode Pos <span class="text-red-500">*</span></label>
                                     <input type="text" id="edit-kode-pos" name="kode_pos" required placeholder="Contoh: 40132"
-                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500"
+                                        oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                                 </div>
                                 <div class="md:col-span-2">
                                     <label class="block text-sm font-medium text-gray-700 mb-2">Alamat Lengkap <span class="text-red-500">*</span></label>

@@ -141,6 +141,7 @@
                             </label>
                             <input type="tel" name="telepon" value="{{ old('telepon', auth()->user()->telepon) }}"
                                 class="w-full px-4 py-2 border {{ $teleponBorderClass }} rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                                 placeholder="08xx-xxxx-xxxx">
                             @error('telepon')
                                 <p class="text-red-500 text-xs mt-1">{{ $message }}</p>

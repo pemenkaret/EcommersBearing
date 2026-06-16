@@ -17,7 +17,7 @@ class CheckoutController extends Controller
 {
     public function showCheckoutForm()
     {
-        $keranjangs = Keranjang::with('produk.images')
+        $keranjangs = Keranjang::with(['produk.images', 'produk.merk'])
             ->where('user_id', auth()->id())
             ->get();
         

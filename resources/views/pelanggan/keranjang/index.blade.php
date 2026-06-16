@@ -12,7 +12,7 @@
             </div>
             <div class="hidden md:block">
                 <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
-                    <i class="fas fa-shopping-cart text-white text-4xl"></i>
+                    <i class="fas fa-cart-shopping text-white text-4xl"></i>
                 </div>
             </div>
         </div>

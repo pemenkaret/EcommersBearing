@@ -68,11 +68,10 @@
                     <button @click="open = !open"
                         class="flex items-center space-x-2 p-2 rounded-lg hover:bg-gray-100 transition-colors">
                         <div class="w-9 h-9 bg-primary-600 rounded-full flex items-center justify-center overflow-hidden">
-                            @if(auth()->user()->avatar)
-                                <img src="{{ asset('storage/' . auth()->user()->avatar) }}" alt="Avatar" class="w-full h-full object-cover">
-                            @else
-                                <span class="text-white text-sm font-semibold">{{ strtoupper(substr(auth()->user()->name, 0, 1)) }}</span>
-                            @endif
+                            @php
+                                $navInitials = collect(explode(' ', auth()->user()->name))->map(fn($s) => strtoupper(substr($s, 0, 1)))->take(2)->join('');
+                            @endphp
+                            <span class="text-white text-sm font-semibold">{{ $navInitials }}</span>
                         </div>
                         <span class="hidden md:block text-sm font-medium text-gray-700">{{ auth()->user()->name }}</span>
                         <i class="fas fa-chevron-down text-gray-400 text-xs"></i>

@@ -181,8 +181,9 @@
                                 <i class="fas fa-phone mr-2 text-gray-400"></i>Nomor Telepon
                             </label>
                             <input id="telepon" type="tel" name="telepon" value="{{ old('telepon') }}" required
-                                class="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-all"
-                                placeholder="08123456789">
+                                class="w-full pl-10 pr-4 py-2 border {{ $errors->has('telepon') ? 'border-red-500' : 'border-gray-300' }} rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors"
+                                placeholder="08xx-xxxx-xxxx"
+                                oninput="this.value = this.value.replace(/[^0-9]/g, '')">
                         </div>
 
                         <!-- Password -->
