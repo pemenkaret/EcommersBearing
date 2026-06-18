@@ -63,7 +63,7 @@ class PembelianController extends Controller
      */
     public function show(int $id): View
     {
-        $order = Order::with(['user', 'items.produk', 'statuses.createdBy'])->findOrFail($id);
+        $order = Order::with(['user', 'items.produk.images', 'statuses.createdBy'])->findOrFail($id);
 
         return view('admin.pembelian.detail', compact('order'));
     }

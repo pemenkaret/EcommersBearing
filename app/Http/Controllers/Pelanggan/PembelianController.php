@@ -11,7 +11,7 @@ class PembelianController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Order::with(['items.produk'])
+        $query = Order::with(['items.produk.images'])
             ->where('user_id', auth()->id());
         
         // Filter by status

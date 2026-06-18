@@ -63,7 +63,7 @@ class CheckoutController extends Controller
 
     public function processCheckout(CheckoutRequest $request)
     {
-        $keranjangs = Keranjang::with('produk')
+        $keranjangs = Keranjang::with(['produk.images'])
             ->where('user_id', auth()->id())
             ->get();
         
