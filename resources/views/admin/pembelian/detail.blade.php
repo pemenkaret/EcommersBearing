@@ -310,7 +310,7 @@
                                         Rp {{ number_format($item->harga, 0, ',', '.') }}
                                     </td>
                                     <td class="px-6 py-4 text-sm text-gray-900">
-                                        {{ $item->qty }}
+                                        {{ $item->quantity }}
                                     </td>
                                     <td class="px-6 py-4 text-sm font-semibold text-gray-900">
                                         Rp {{ number_format($item->subtotal, 0, ',', '.') }}
